@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<atmosphere-handlers>
+	<atmosphere-handler support-session="true"
+		context-root="/atmosphere/atm" class-name="wol.server.connector.jaxrs.AtmosphereResource"
+		broadcaster=""
+		broadcasterCache=""
+		broadcastFilterClasses=""
+        interceptorClasses=""
+		comet-support="">
+	<!-- 
+		<property name="servletClassName"
+			value="com.sun.jersey.spi.container.servlet.ServletContainer" />
+			
+		<applicationConfig>
+			<param-name>org.atmosphere.jersey.servlet-mapping</param-name>
+			<param-value></param-value>
+		</applicationConfig> -->
+
+		<applicationConfig>
+			<param-name>org.atmosphere.useWebSocket</param-name>
+			<param-value>true</param-value>
+		</applicationConfig>
+
+		<applicationConfig>
+			<param-name>org.atmosphere.cpr.asyncSupport</param-name>
+			<param-value>true</param-value>
+		</applicationConfig>
+
+		<applicationConfig>
+			<param-name>org.atmosphere.cpr.sessionSupport</param-name>
+			<param-value>true</param-value>
+		</applicationConfig>
+
+
+		<frameworkConfig>
+			<param-name>org.atmosphere.cpr.AtmosphereServlet</param-name>
+			<param-value></param-value>
+		</frameworkConfig>
+	
+	</atmosphere-handler>
+</atmosphere-handlers>
