@@ -16,10 +16,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import wol.WolContainer;
+import wol.dom.WolContainer;
+import wol.dom.space.iPlanetoid;
 import wol.server.repository.KryoRepository;
 import wol.starsystem.StarsContainer;
-import wol.starsystem.planets.iPlanetoid;
  
 /**
  * An application context Java configuration class. The usage of Java configuration

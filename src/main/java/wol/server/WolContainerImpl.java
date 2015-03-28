@@ -11,9 +11,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import wol.WolContainer;
 import wol.dom.Entity;
 import wol.dom.Window;
+import wol.dom.WolContainer;
 import wol.dom.WorldContainer;
 import wol.dom.iEvent;
 import wol.dom.space.IntVector;
