@@ -131,14 +131,19 @@
 		<!-- WOL -->
 		<dependency>
 			<groupId>wol</groupId>
-			<artifactId>WorldContainer</artifactId>
+			<artifactId>dom</artifactId>
 			<version>${wol.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>wol</groupId>
-			<artifactId>wolRstConnector</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>WorldContainer</artifactId>
+			<version>${wol.version}</version>
 		</dependency>
+		<dependency>
+			 <groupId>wol</groupId>
+ 			<artifactId>wolRstConnector</artifactId>
+ 			<version>0.0.1-SNAPSHOT</version>
+  		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
