@@ -3,8 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <title>Test Suite</title>
+<link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.18.0.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src="//code.jquery.com/qunit/qunit-1.18.0.js"></script>
+
+<script>
+function webSocketTest(){
+	try {
+		if(!("WebSocket" in window)){
+			$('#TestList').append('Web Socket not supported');
+    	}else{
+    		var ws = new WebSocket("ws://localhost:8180/wolServer/ws/view/");
+    	    ws.onopen = function(){
+    	    	$('#TestList').append('<li>Web Socket Open</li>');
+    	    };
+    	    ws.onmessage = function(message){
+    	    	$('#TestList').append('<li>Web Socket Message:'+message+"</li>");
+    	    };
+    	    for(i=0;i<10000;i++){
+    	    	console.log(i);
+    	    }
+    	    ws.send('Hellò');
+    	    ws.close();
+    	}
+		
+	}catch(err) {
+		$('#TestList').append('<li>WebSocket Error:'+err.message+'</li>');
+	}
+}
+
+function restTest(){
+	
+	try {
+		var result = ''
+		jQuery.ajax({
+	         type: 'GET',
+	         url: 'http://localhost:8081/wolServer/testRest/view/window?x=0&y=0&z=0',
+	         contentType: 'application/json; charset=utf-8',
+	         dataType: 'json',
+	         async: false,
+	         success: function (data, status, jqXHR) {
+	        	 result=data;
+	        	 //$('#TestList').append('<li>Rest Test OK</li>');
+	         },
+
+	         error: function (jqXHR, status) {
+	        	 $('#TestList').append('<li>Rest Error:'+status+'</li>');
+	         }
+		});
+		QUnit.test( "Rest Connection", function( assert ) {
+		      assert.ok( result, "Rest Test OK" );
+		    });
+	}catch(err) {
+		$('#TestList').append('<li>Rest Error:'+err.message+'</li>');
+	}
+}
+
+$(document).ready(function() {
+	webSocketTest();
+	restTest();
+});
+
+</script>
 </head>
 <body>
-<h1>Test Connect</h1>
+<h1>Test Suite</h1>
+<ul id="TestList"></ul>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
 </body>
 </html>
