@@ -11,10 +11,6 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 import wol.dom.WolContainer;
 import wol.dom.space.iPlanetoid;
@@ -31,7 +27,6 @@ import wol.starsystem.StarsContainer;
  */
 @Configuration
 @ComponentScan(basePackages = {"wol.server"})
-@EnableWebMvc
 @ImportResource("classpath:applicationContext.xml")
 @PropertySource("classpath:application.properties")
 public class ApplicationContext {
@@ -54,10 +49,9 @@ public class ApplicationContext {
     private static final String PROPERTY_NAME_MESSAGESOURCE_USE_CODE_AS_DEFAULT_MESSAGE = "message.source.use.code.as.default.message";
  
     private static final String PROPERTY_NAME_REPOSITORY_PATH = "repository.path";
+    
     @Resource
     private Environment environment;
- 
-   
  
     @Bean
     public MessageSource messageSource() {
@@ -69,16 +63,7 @@ public class ApplicationContext {
         return messageSource;
     }
  
-    @Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
- 
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix(VIEW_RESOLVER_PREFIX);
-        viewResolver.setSuffix(VIEW_RESOLVER_SUFFIX);
- 
-        return viewResolver;
-    }
+   
     
     @Bean
     public KryoRepository<StarsContainer,iPlanetoid> kryoRepository(){
@@ -91,8 +76,8 @@ public class ApplicationContext {
     }
     
     @Bean
-    public WolContainer<StarsContainer,iPlanetoid> wolContainer(){
-    	WolContainer<StarsContainer,iPlanetoid> wolContainer=new WolContainerImpl<StarsContainer,iPlanetoid>(StarsContainer.class,1,1);
+    public WolContainer wolContainer(){
+    	WolContainerImpl<StarsContainer,iPlanetoid> wolContainer=new WolContainerImpl<StarsContainer,iPlanetoid>(StarsContainer.class,1,1);
     	return wolContainer;
     }
 }
