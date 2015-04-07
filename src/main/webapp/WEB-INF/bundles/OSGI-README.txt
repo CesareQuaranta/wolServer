@@ -1,0 +1,1 @@
+Directory predisposta per l'hot deploy di plugin OSGI
