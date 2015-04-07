@@ -25,7 +25,7 @@ import wol.server.dom.BackgroundChange;
 import wol.server.repository.KryoRepository;
 
 
-public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Entity> extends WolContainer<T,E> {
+public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Entity> extends WolContainer {
 	private Class<T> wolClass;
 	private float spacePrecision;
 	private float timePrecision;
@@ -91,15 +91,15 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Ent
 		List<iEvent> events=new ArrayList<iEvent>();
 		eventsWindow.put(window.getUID(), events);
 		try {
-			events.add(new BackgroundChange(new URL("shapeRenderer/image/B"+window.getUID())));
+			events.add(new BackgroundChange(new URL("http://localhost:8081/shapeRenderer/image/B"+window.getUID())));
 			WorldContainer<E, Position> wc=wolInstances.iterator().next();
 			iSpace<E,Position> space= wc.getSpace();
 			for(int x=0;x<window.getDimensions().getX();x++){
-				for(int y=0;x<window.getDimensions().getY();y++){
+				for(int y=0;y<window.getDimensions().getY();y++){
 					for(int z=0;z<window.getDimensions().getZ();z++){
 						E curEntity=space.getEntity(new Position(x,y,z));
 						if(curEntity!=null){
-							Movement<E> startPositionEvent=new Movement(curEntity,new Vector());
+							Movement<E> startPositionEvent=new Movement<E>(curEntity,new Vector());
 							events.add(startPositionEvent);
 						}
 					}
