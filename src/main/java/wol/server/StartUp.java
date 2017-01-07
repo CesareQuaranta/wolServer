@@ -1,5 +1,7 @@
 package wol.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
@@ -12,6 +14,7 @@ import wol.dom.WolContainer;
 
 @Component
 public class StartUp implements ApplicationListener<ApplicationContextEvent> {
+	final static Logger logger = LoggerFactory.getLogger(StartUp.class);
 	@Autowired 
 	private WolContainer wolContainer;
 	private Thread wolThread;
@@ -26,13 +29,11 @@ public class StartUp implements ApplicationListener<ApplicationContextEvent> {
 				wolThread=new Thread(wolContainer,"WolThread");
 				wolThread.setContextClassLoader(ClassLoader.getSystemClassLoader());
 				wolThread.start();
-				System.out.println("Wol Started");
+				logger.info("Wol Started");
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Startup Error:", e);
 			} 
-			
 		}
 		
 	}
