@@ -4,7 +4,7 @@
 
 	<groupId>wol</groupId>
 	<artifactId>wolServer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>wolServer</name>
@@ -194,7 +194,7 @@
 		 <dependency>
 			 <groupId>wol</groupId>
  			<artifactId>wolRstConnector</artifactId>
- 			<version>${wol.version}T</version>
+ 			<version>${wol.version}</version>
   		</dependency> 
   		<!--<dependency>
 			<groupId>wol</groupId>

@@ -21,7 +21,7 @@ import wol.dom.space.Movement;
 import wol.dom.space.Position;
 import wol.dom.space.Vector;
 import wol.dom.space.iSpace;
-import wol.server.dom.BackgroundChange;
+import wol.dom.server.BackgroundChange;
 import wol.server.repository.WolRepository;
 
 
