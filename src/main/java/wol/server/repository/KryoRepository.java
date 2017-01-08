@@ -18,7 +18,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
-public class KryoRepository<T extends WorldContainer<E,Position>,E extends Entity> {
+public class KryoRepository<T extends WorldContainer<E,Position>,E extends Entity> implements WolRepository<T,E> {
     final static Logger logger = LoggerFactory.getLogger(KryoRepository.class);
 	private Class<T> wolClass;
 	private File basePath;

@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import wol.dom.WolContainer;
 import wol.dom.space.iPlanetoid;
 import wol.server.repository.KryoRepository;
+import wol.server.repository.WolRepository;
 import wol.starsystem.StarsContainer;
  
 /**
@@ -64,16 +65,16 @@ public class ApplicationContext {
     }
  
    
-    
+    /*
     @Bean
-    public KryoRepository<StarsContainer,iPlanetoid> kryoRepository(){
+    public WolRepository<StarsContainer,iPlanetoid> kryoRepository(){
     	File repoPath=new File(environment.getRequiredProperty(PROPERTY_NAME_REPOSITORY_PATH));
     	if(!repoPath.exists()){
     		repoPath.mkdir();
     	}
-    	KryoRepository<StarsContainer,iPlanetoid> repository=new KryoRepository<StarsContainer,iPlanetoid>(repoPath, StarsContainer.class);
+    	WolRepository<StarsContainer,iPlanetoid> repository=new KryoRepository<StarsContainer,iPlanetoid>(repoPath, StarsContainer.class);
     	return repository;
-    }
+    }*/
     
     @Bean
     public WolContainer wolContainer(){

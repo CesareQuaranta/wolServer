@@ -22,7 +22,7 @@ import wol.dom.space.Position;
 import wol.dom.space.Vector;
 import wol.dom.space.iSpace;
 import wol.server.dom.BackgroundChange;
-import wol.server.repository.KryoRepository;
+import wol.server.repository.WolRepository;
 
 
 public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Entity> extends WolContainer {
@@ -34,8 +34,8 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Ent
 	private Collection<Window> openWindows;
 	private Map<String,List<iEvent>> eventsWindow;
 	
-	@Autowired
-	private KryoRepository<T,E> repository;//TODO JavaSpace
+	@Autowired(required=false)
+	private WolRepository<T,E> repository;//TODO 
 	
 	public WolContainerImpl(Class<T> wolClass,float spacePrecision, float timePrecision) {
 		this.wolClass=wolClass;
@@ -46,12 +46,17 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Ent
 	}
 	
 	public void init() throws Exception{
-
-		wolInstances=repository.loadInstances();
+		if(repository!=null){
+			wolInstances=repository.loadInstances();
+		}else{
+			wolInstances = new ArrayList<WorldContainer<E,Position>>();
+		}
 		if(wolInstances.isEmpty()){
 			WorldContainer<E,Position> newEmptyInstance= wolClass.newInstance();
 			newEmptyInstance.init(spacePrecision,timePrecision);
-			repository.registry(newEmptyInstance);
+			if(repository!=null){
+				repository.registry(newEmptyInstance);
+			}
 			wolInstances.add(newEmptyInstance);
 		}
 	}
@@ -65,7 +70,9 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Ent
 				curInstance.run();
 			}
 		}
-		repository.serialize(wolInstances);//Da valutare se farlo ogni tot o in maniera cachata
+		if(repository!=null){
+			repository.serialize(wolInstances);//Da valutare se farlo ogni tot o in maniera cachata
+		}
 		}
 	}
 
