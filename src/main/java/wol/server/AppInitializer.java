@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
@@ -21,6 +22,8 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -28,7 +31,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import wol.server.connector.jaxrs.JerseyServlet;
 //import wol.server.connector.ws.ViewEndpoint;
 
-
+@Component
 public class AppInitializer implements WebApplicationInitializer  {
 /**
  * Servlet 3.0+ environments to configure the ServletContext programmatically 

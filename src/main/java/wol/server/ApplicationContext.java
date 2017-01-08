@@ -27,7 +27,7 @@ import wol.starsystem.StarsContainer;
  */
 @Configuration
 @ComponentScan(basePackages = {"wol.server"})
-@ImportResource("classpath:applicationContext.xml")
+//@ImportResource("classpath:applicationContext.xml")
 @PropertySource("classpath:application.properties")
 public class ApplicationContext {
      
