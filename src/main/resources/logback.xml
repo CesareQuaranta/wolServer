@@ -23,7 +23,7 @@
         </triggeringPolicy>
     </appender>
     
-    <logger name="wol.servers" level="DEBUG" additivity="false">
+    <logger name="wol.server" level="DEBUG" additivity="false">
             <appender-ref ref="STDOUT" />
             <appender-ref ref="FILE" />
     </logger>
