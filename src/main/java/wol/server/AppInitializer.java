@@ -10,6 +10,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
@@ -32,7 +33,7 @@ import wol.server.connector.jaxrs.JerseyServlet;
 //import wol.server.connector.ws.ViewEndpoint;
 
 @Component
-public class AppInitializer implements WebApplicationInitializer  {
+public class AppInitializer implements WebApplicationInitializer,ServletContainerInitializer  {
 /**
  * Servlet 3.0+ environments to configure the ServletContext programmatically 
  * as opposed to (or possibly in conjunction with) the traditional web.xml-based approach.
@@ -183,4 +184,11 @@ public class AppInitializer implements WebApplicationInitializer  {
 	   
 	        return list;
 	    }
+
+	@Override
+	public void onStartup(Set<Class<?>> c, ServletContext ctx)
+			throws ServletException {
+		 onStartup(ctx);
+		
+	}
 }
