@@ -32,7 +32,7 @@ function webSocketTest(){
 	}
 }
 
-function restTest(){
+function restTestWindow(){
 	
 	try {
 		var result = ''
@@ -51,17 +51,43 @@ function restTest(){
 	        	 $('#TestList').append('<li>Rest Error:'+status+'</li>');
 	         }
 		});
-		QUnit.test( "Rest Connection", function( assert ) {
-		      assert.ok( result, "Rest Test OK" );
+		QUnit.test( "Rest Connection1", function( assert ) {
+		      assert.ok( result, "Rest Test Window OK" );
 		    });
 	}catch(err) {
 		$('#TestList').append('<li>Rest Error:'+err.message+'</li>');
 	}
 }
+function restTestEvents(){
+	
+	try {
+		var result = ''
+		jQuery.ajax({
+	         type: 'GET',
+	         url: 'http://localhost:8080/wol/testRest/view/window/events?id=',
+	         contentType: 'application/json; charset=utf-8',
+	         dataType: 'json',
+	         async: false,
+	         success: function (data, status, jqXHR) {
+	        	 result=data;
+	        	 //$('#TestList').append('<li>Rest Test OK</li>');
+	         },
 
+	         error: function (jqXHR, status) {
+	        	 $('#TestList').append('<li>Rest Error:'+status+'</li>');
+	         }
+		});
+		QUnit.test( "Rest Connection2", function( assert ) {
+		      assert.ok( result, "Rest Test Events OK" );
+		    });
+	}catch(err) {
+		$('#TestList').append('<li>Rest Error:'+err.message+'</li>');
+	}
+}
 $(document).ready(function() {
-	webSocketTest();
-	restTest();
+	//webSocketTest();
+	restTestWindow();
+	restTestEvents();
 });
 
 </script>
