@@ -194,7 +194,7 @@
 		 <dependency>
 			 <groupId>wol</groupId>
  			<artifactId>wolRstConnector</artifactId>
- 			<version>0.0.1-SNAPSHOT</version>
+ 			<version>${wol.version}T</version>
   		</dependency> 
   		<!--<dependency>
 			<groupId>wol</groupId>
