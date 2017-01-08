@@ -51,11 +51,11 @@ public class AppInitializer implements WebApplicationInitializer  {
 	    ctx.setServletContext(servletContext);
 	    //servletContext.addListener("org.springframework.web.context.request.RequestContextListener");
 	    
-	    
+	    /*
 	   ServletRegistration.Dynamic jerseyServlet = servletContext.addServlet("JerseyServlet", new JerseyServlet());
 	    jerseyServlet.setInitParameter("javax.ws.rs.Application", "wol.server.connector.jaxrs.JerseyConfig");
 	    jerseyServlet.setLoadOnStartup(1);
-	    jerseyServlet.addMapping("/testRest/*");
+	    jerseyServlet.addMapping("/testRest/*");*/
 	    //initOSGI(servletContext);
 	    //final ServerContainer serverContainer = (ServerContainer) servletContext.getAttribute("javax.websocket.server.ServerContainer");
 	    //serverContainer.addEndpoint(ViewEndpoint.class);
