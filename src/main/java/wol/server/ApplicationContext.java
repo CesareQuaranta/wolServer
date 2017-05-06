@@ -2,10 +2,14 @@ package wol.server;
 import java.io.File;
 
 import javax.annotation.Resource;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebListener;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
@@ -14,6 +18,7 @@ import org.springframework.core.env.Environment;
 
 import wol.dom.WolContainer;
 import wol.dom.space.iPlanetoid;
+import wol.server.connector.ws.WebSocketInitializer;
 import wol.server.repository.KryoRepository;
 import wol.server.repository.WolRepository;
 import wol.starsystem.StarsContainer;
@@ -27,7 +32,10 @@ import wol.starsystem.StarsContainer;
  * @author Petri Kainulainen
  */
 @Configuration
-@ComponentScan(basePackages = {"wol.server"})
+@ComponentScan(basePackages = {"wol.server"},
+useDefaultFilters = false,
+includeFilters = { @ComponentScan.Filter(type = FilterType.ANNOTATION, value=WebListener.class)},
+excludeFilters = { @ComponentScan.Filter( Configuration.class ) })
 //@ImportResource("classpath:applicationContext.xml")
 @PropertySource("classpath:application.properties")
 public class ApplicationContext {
@@ -63,7 +71,7 @@ public class ApplicationContext {
  
         return messageSource;
     }
- 
+    
    
     /*
     @Bean

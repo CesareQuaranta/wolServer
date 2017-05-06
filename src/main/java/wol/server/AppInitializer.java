@@ -1,19 +1,25 @@
 package wol.server;
 
+import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebListener;
+import javax.servlet.annotation.WebServlet;
 
 import org.apache.felix.http.proxy.ProxyListener;
 import org.apache.felix.http.proxy.ProxyServlet;
@@ -23,17 +29,27 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import wol.server.connector.jaxrs.JerseyServlet;
 //import wol.server.connector.ws.ViewEndpoint;
 
 @Component
 public class AppInitializer implements WebApplicationInitializer,ServletContainerInitializer  {
+	private static final String WEB_SERVLET_ANNOTATION_TYPE = "javax.servlet.annotation.WebServlet";
+	private static final String WEB_FILTER_ANNOTATION_TYPE = "javax.servlet.annotation.WebFilter";
+	private static final String WEB_LISTENER_ANNOTATION_TYPE = "javax.servlet.annotation.WebListener";
+
+	private static final Set<String> SUPPORTED_WEB_ANNOTATION_TYPES = new LinkedHashSet<>(Arrays.asList(
+			WEB_SERVLET_ANNOTATION_TYPE, WEB_FILTER_ANNOTATION_TYPE, WEB_LISTENER_ANNOTATION_TYPE));
+
 /**
  * Servlet 3.0+ environments to configure the ServletContext programmatically 
  * as opposed to (or possibly in conjunction with) the traditional web.xml-based approach.
@@ -46,10 +62,17 @@ public class AppInitializer implements WebApplicationInitializer,ServletContaine
 		ContextLoaderListener loaderListener = new ContextLoaderListener(ctx);
 		try {
 		// Make context listens for servlet events
-	    servletContext.addListener(loaderListener);
-
+	   servletContext.addListener(loaderListener);
+	   
+	   //Search for WebListners
+	   for (Map.Entry<String, Object> entry : ctx.getBeansWithAnnotation(WebListener.class).entrySet()){
+		   System.out.println("Registry WebListner  "+entry.getKey());
+		   servletContext.addListener((ServletContextListener)entry.getValue());
+	   }
+	  
 	    // Make context know about the servletContext
 	    ctx.setServletContext(servletContext);
+	    
 	    //servletContext.addListener("org.springframework.web.context.request.RequestContextListener");
 	    
 	    /*
@@ -92,9 +115,51 @@ public class AppInitializer implements WebApplicationInitializer,ServletContaine
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.setConfigLocation("wol.server");
         context.register(ApplicationContext.class);  
+        context.scan("wol.server");
+        context.refresh();
         context.registerShutdownHook(); // add a shutdown hook for the above context...
         return context;
     }
+
+	@SuppressWarnings("unchecked")
+	private void configureIncludeFilters(ClassPathScanningCandidateComponentProvider provider, ClassLoader cl) {
+
+		for (String annotationType : SUPPORTED_WEB_ANNOTATION_TYPES) {
+			try {
+				AnnotationTypeFilter filter = new AnnotationTypeFilter((Class<? extends Annotation>) ClassUtils.forName(annotationType, cl));
+				provider.addIncludeFilter(filter);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void registerJeeComponents(ConfigurableListableBeanFactory beanFactory, ClassLoader cl,
+			Set<BeanDefinition> candiates) {
+
+		for (BeanDefinition bd : candiates) {
+
+			try {
+				Class<?> beanClass = ClassUtils.forName(bd.getBeanClassName(), cl);
+				WebServlet webServlet = beanClass.getDeclaredAnnotation(WebServlet.class);
+				WebFilter webFilter = beanClass.getDeclaredAnnotation(WebFilter.class);
+				WebListener webListener = beanClass.getDeclaredAnnotation(WebListener.class);
+
+				DefaultListableBeanFactory targetBeanFactory = (DefaultListableBeanFactory) beanFactory;
+
+				if (webServlet != null) {
+					//createAndRegisterServletBean(targetBeanFactory, bd, beanClass, webServlet);
+				} else if (webFilter != null) {
+					//createAndRegisterServletFilterBean(targetBeanFactory, bd, beanClass, webFilter);
+				} else if (webListener != null) {
+					//createAndRegisterWebListenerBean(targetBeanFactory, bd, beanClass, webListener);
+				}
+
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	private void initOSGI(ServletContext servletContext) throws Exception{
 		ServiceLoader<FrameworkFactory> loader = ServiceLoader.load(FrameworkFactory.class);
