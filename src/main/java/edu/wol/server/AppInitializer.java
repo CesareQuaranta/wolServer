@@ -113,9 +113,9 @@ public class AppInitializer implements WebApplicationInitializer,ServletContaine
 	
 	private AnnotationConfigWebApplicationContext getContext() {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.setConfigLocation("wol.server");
+        context.setConfigLocation("edu.wol.server");
         context.register(ApplicationContext.class);  
-        context.scan("wol.server");
+        context.scan("edu.wol.server");
         context.refresh();
         context.registerShutdownHook(); // add a shutdown hook for the above context...
         return context;

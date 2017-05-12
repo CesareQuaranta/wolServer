@@ -14,40 +14,38 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.wol.dom.WolEntity;
 import edu.wol.dom.WorldContainer;
 import edu.wol.dom.space.Position;
+import edu.wol.dom.space.Planetoid;
 import edu.wol.starsystem.StarDial;
 
 @Repository
 @Transactional
-public class JPARepository<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolRepository<T,E> {
+public class StarsRepository implements WolRepository<StarDial,Planetoid> {
 	@PersistenceContext
     private EntityManager manager;
-	private Class<T> wolClass;
 	
-	public JPARepository(Class<T> wolClass) {
-		this.wolClass=wolClass;
-	}
+	
 
 	@Override
-	public Collection<T> loadInstances() {
-		List<T> instances = manager.createQuery("Select a From Entity a", this.wolClass).getResultList();
+	public Collection<StarDial> loadInstances() {
+		List<StarDial> instances = manager.createQuery("SELECT a FROM StarDial a", StarDial.class).setMaxResults(10).getResultList();
 		return instances;
 	}
 
 	@Override
-	public void registry(T newInstance) throws Exception, IOException {
+	public void registry(StarDial newInstance) throws Exception, IOException {
 		manager.persist(newInstance);
 
 	}
 	
 	@Override
-	public void serialize(Collection<T> instances) {
-		for(T instance:instances){
+	public void serialize(Collection<StarDial> instances) {
+		for(StarDial instance:instances){
 			manager.persist(instance);
 		}
 	}
 
 	@Override
-	public void remove(T instance) {
+	public void remove(StarDial instance) {
 		manager.remove(instance);
 	}
 

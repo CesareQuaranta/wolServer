@@ -24,8 +24,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import edu.wol.dom.WolContainer;
-import edu.wol.dom.space.iPlanetoid;
-import edu.wol.server.repository.JPARepository;
+import edu.wol.dom.space.Planetoid;
+import edu.wol.server.repository.StarsRepository;
 import edu.wol.server.repository.WolRepository;
 import edu.wol.starsystem.StarDial;
  
@@ -39,7 +39,7 @@ import edu.wol.starsystem.StarDial;
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"wol.server"},
+@ComponentScan(basePackages = {"edu.wol.server"},
 useDefaultFilters = false,
 includeFilters = { @ComponentScan.Filter(type = FilterType.ANNOTATION, value=WebListener.class)},
 excludeFilters = { @ComponentScan.Filter( Configuration.class ) })
@@ -58,7 +58,6 @@ public class ApplicationContext {
     private static final String PROPERTY_NAME_HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
     private static final String PROPERTY_NAME_HIBERNATE_NAMING_STRATEGY = "hibernate.ejb.naming_strategy";
     private static final String PROPERTY_NAME_HIBERNATE_SHOW_SQL = "hibernate.show_sql";
-    private static final String PROPERTY_NAME_ENTITYMANAGER_PACKAGES_TO_SCAN = "entitymanager.packages.to.scan";
  
     private static final String PROPERTY_NAME_MESSAGESOURCE_BASENAME = "message.source.basename";
     private static final String PROPERTY_NAME_MESSAGESOURCE_USE_CODE_AS_DEFAULT_MESSAGE = "message.source.use.code.as.default.message";
@@ -70,7 +69,7 @@ public class ApplicationContext {
  
     @Bean
     public WolContainer wolContainer(){
-    	WolContainerImpl<StarDial,iPlanetoid> wolContainer=new WolContainerImpl<StarDial,iPlanetoid>(StarDial.class,1,1);
+    	WolContainerImpl<StarDial,Planetoid> wolContainer=new WolContainerImpl<StarDial,Planetoid>(StarDial.class,1,1);
     	return wolContainer;
     }
     
@@ -93,18 +92,18 @@ public class ApplicationContext {
     	}
     	WolRepository<StarsContainer,iPlanetoid> repository=new KryoRepository<StarsContainer,iPlanetoid>(repoPath, StarsContainer.class);
     	return repository;
-    }*/
+    }
     @Bean
     public WolRepository<StarDial,iPlanetoid> jpaRepository(){
     	WolRepository<StarDial,iPlanetoid> repository=new JPARepository<StarDial,iPlanetoid>(StarDial.class);
     	return repository;
-    }
+    }*/
     
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
        em.setDataSource(dataSource());
-       em.setPackagesToScan(new String[] { "wol.dom" });
+       em.setPackagesToScan(new String[] { "edu.wol" });
   
        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
        em.setJpaVendorAdapter(vendorAdapter);

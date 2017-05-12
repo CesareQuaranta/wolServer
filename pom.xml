@@ -261,7 +261,7 @@
 
 		<!-- WOL Dependecies -->
 		<dependency>
-			<groupId>edu.wol</groupId>
+			<groupId>wol</groupId>
 			<artifactId>dom</artifactId>
 			<version>${edu.wol.version}</version>
 		</dependency>
@@ -276,7 +276,7 @@
  			<version>${edu.wol.version}</version>
   		</dependency> -->
   		<dependency>
-			<groupId>edu.wol</groupId>
+			<groupId>wol</groupId>
 			<artifactId>WsConnector</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -336,7 +336,8 @@
 				     </systemProperty>
 				  </systemProperties>
 			    <webApp>
-			       <contextPath>/edu.wol</contextPath>
+			       <contextPath>/wol</contextPath>
+			       <extraClasspath>${basedir}/src/main/resources</extraClasspath>
 			    </webApp>
 			    <contextXml>${basedir}/src/test/resources/jetty-context.xml</contextXml>
 			    <useTestScope>true</useTestScope>
