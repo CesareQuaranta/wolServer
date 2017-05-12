@@ -1,7 +1,8 @@
-package wol.server.repository;
+package edu.wol.server.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,15 +11,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import wol.dom.Entity;
-import wol.dom.WorldContainer;
-import wol.dom.space.Position;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
-public class KryoRepository<T extends WorldContainer<E,Position>,E extends Entity> implements WolRepository<T,E> {
+import edu.wol.dom.WolEntity;
+import edu.wol.dom.WorldContainer;
+import edu.wol.dom.space.Position;
+
+public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolRepository<T,E> {
     final static Logger logger = LoggerFactory.getLogger(KryoRepository.class);
 	private Class<T> wolClass;
 	private File basePath;
@@ -30,14 +31,14 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends Entit
 		kryo = new Kryo();
 	}
 	
-	public Collection<WorldContainer<E,Position>> loadInstances(){
-		Collection<WorldContainer<E,Position>> instances=new ArrayList<WorldContainer<E,Position>>();
+	public Collection<T> loadInstances(){
+		Collection<T> instances=new ArrayList<T>();
 		if(basePath != null){
 			for(File curFile:basePath.listFiles()){
 				try {
 					if(curFile.isFile() && curFile.canRead()){
 						Input input = new Input(new FileInputStream(curFile));
-						WorldContainer<E,Position> curInstrance=kryo.readObject(input,wolClass);
+						T curInstrance=kryo.readObject(input,wolClass);
 						instances.add(curInstrance);
 					}
 				} catch (Exception e) {
@@ -50,7 +51,7 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends Entit
 		return instances;
 	}
 	
-	public void registry(WorldContainer<E,Position> newInstance) throws Exception, IOException{
+	public void registry(T newInstance) throws Exception, IOException{
 		File newFile=new File(basePath,"wol_"+newInstance.hashCode()+".kryo");
 		if(newFile.createNewFile()){
 			internalSerialize(newInstance,newFile);
@@ -58,7 +59,7 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends Entit
 		
 	}
 	
-	public void serialize(Collection<WorldContainer<E,Position>> instances){
+	public void serialize(Collection<T> instances){
 		
 	}
 	
@@ -66,6 +67,12 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends Entit
 		Output output = new Output(new FileOutputStream(file));
 		kryo.writeObject(output,newInstance);
 		output.close();
+	}
+
+	@Override
+	public void remove(T instance) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -9,12 +9,12 @@
     </appender>
       <!-- Send debug messages to a file at jboss Log path -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${jboss.server.log.dir}/wol.log</file>
+        <file>${jboss.server.log.dir}/edu.wol.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd_HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>${jboss.server.log.dir}/wol.%i.log.zip</FileNamePattern>
+            <FileNamePattern>${jboss.server.log.dir}/edu.wol.%i.log.zip</FileNamePattern>
             <MinIndex>1</MinIndex>
             <MaxIndex>10</MaxIndex>
         </rollingPolicy>
@@ -23,12 +23,11 @@
         </triggeringPolicy>
     </appender>
     
-    <logger name="wol.server" level="DEBUG" additivity="false">
+    <logger name="edu.wol.server" level="DEBUG" additivity="false">
             <appender-ref ref="STDOUT" />
             <appender-ref ref="FILE" />
     </logger>
-    <!-- By default, the level of the root level is set to WARNING -->
-    <root level="WARNING">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

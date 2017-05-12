@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>wol</groupId>
+	<groupId>edu.wol</groupId>
 	<artifactId>wolServer</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -32,12 +32,16 @@
     </licenses>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<wol.version>1.0-SNAPSHOT</wol.version>
+		<edu.wol.version>1.0-SNAPSHOT</edu.wol.version>
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<jdk.version>1.8</jdk.version>
 		<jetty.version>9.3.18.v20170406</jetty.version><!-- 9.4.4.v20170414 -->
 		<spring.version>4.3.8.RELEASE</spring.version>
-		 <slf4j.version>1.7.22</slf4j.version>
+		<spring-data-jpa.version>1.11.3.RELEASE</spring-data-jpa.version>
+		<hibernate.version>5.2.10.Final</hibernate.version>
+		<postgresql.version>9.4.1212</postgresql.version>
+		<h2.version>1.4.195</h2.version>
+		<slf4j.version>1.7.22</slf4j.version>
         <!-- Logback v0.9.29 is the latest version for the SLF4J above -->
         <logback.version>1.1.8</logback.version>
 	</properties>
@@ -124,11 +128,55 @@
 		    <version>${spring.version}</version>
 		</dependency>
 		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>            
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring-data-jpa.version}</version>
+        </dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-tx</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
+		
+		<!-- Hiberante -->
+		<dependency>
+		   <groupId>org.hibernate</groupId>
+		   <artifactId>hibernate-entitymanager</artifactId>
+		   <version>${hibernate.version}</version>
+		   <scope>runtime</scope>
+		</dependency>
+		<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>5.3.4.Final</version>
 		</dependency>
-		
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>${h2.version}</version>
+		    <scope>runtime</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>${postgresql.version}</version>
+		</dependency>
 		<!-- 
 		<dependency>
 			<groupId>org.apache.avro</groupId>
@@ -213,27 +261,36 @@
 
 		<!-- WOL Dependecies -->
 		<dependency>
-			<groupId>wol</groupId>
+			<groupId>edu.wol</groupId>
 			<artifactId>dom</artifactId>
-			<version>${wol.version}</version>
+			<version>${edu.wol.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>wol</groupId>
+			<groupId>edu.wol</groupId>
 			<artifactId>WorldContainer</artifactId>
-			<version>${wol.version}</version>
+			<version>${edu.wol.version}</version>
 		</dependency>
 		<!--  <dependency>
-			 <groupId>wol</groupId>
+			 <groupId>edu.wol</groupId>
  			<artifactId>wolRstConnector</artifactId>
- 			<version>${wol.version}</version>
+ 			<version>${edu.wol.version}</version>
   		</dependency> -->
   		<dependency>
-			<groupId>wol</groupId>
+			<groupId>edu.wol</groupId>
 			<artifactId>WsConnector</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
+	  <resources>
+	      <resource>
+	        <directory>src/main/resources</directory>
+	        <excludes>
+	          <exclude>application.properties</exclude>
+	          <exclude>logback.xml</exclude>
+	        </excludes>
+	      </resource>
+	    </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -247,7 +304,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
+				<version>3.1.0</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 			        <archive>
@@ -256,6 +313,7 @@
 			                <!-- Dependencies>org.springframework.spring</Dependencies> -->
 			            </manifestEntries>
 			        </archive>
+			        <packagingExcludes>WEB-INF/lib/h2-*.jar</packagingExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -278,7 +336,7 @@
 				     </systemProperty>
 				  </systemProperties>
 			    <webApp>
-			       <contextPath>/wol</contextPath>
+			       <contextPath>/edu.wol</contextPath>
 			    </webApp>
 			    <contextXml>${basedir}/src/test/resources/jetty-context.xml</contextXml>
 			    <useTestScope>true</useTestScope>

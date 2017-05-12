@@ -1,4 +1,4 @@
-package wol.server;
+package edu.wol.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,7 @@ import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
-import wol.dom.WolContainer;
+import edu.wol.dom.WolContainer;
 
 @Component
 public class StartUp implements ApplicationListener<ApplicationContextEvent> {

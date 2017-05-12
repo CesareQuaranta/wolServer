@@ -1,4 +1,4 @@
-package wol.server;
+package edu.wol.server;
 
 import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;

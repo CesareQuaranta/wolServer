@@ -1,4 +1,4 @@
-package wol.server;
+package edu.wol.server;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,25 +11,25 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import wol.dom.Entity;
-import wol.dom.Window;
-import wol.dom.WolContainer;
-import wol.dom.WorldContainer;
-import wol.dom.iEvent;
-import wol.dom.space.IntVector;
-import wol.dom.space.Movement;
-import wol.dom.space.Position;
-import wol.dom.space.Vector;
-import wol.dom.space.iSpace;
-import wol.dom.server.BackgroundChange;
-import wol.server.repository.WolRepository;
+import edu.wol.dom.WolEntity;
+import edu.wol.dom.Window;
+import edu.wol.dom.WolContainer;
+import edu.wol.dom.WorldContainer;
+import edu.wol.dom.iEvent;
+import edu.wol.dom.server.BackgroundChange;
+import edu.wol.dom.space.IntVector;
+import edu.wol.dom.space.Movement;
+import edu.wol.dom.space.Position;
+import edu.wol.dom.space.Vector;
+import edu.wol.dom.space.iSpace;
+import edu.wol.server.repository.WolRepository;
 
 
-public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Entity> extends WolContainer {
+public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> extends WolContainer {
 	private Class<T> wolClass;
 	private float spacePrecision;
 	private float timePrecision;
-	private Collection<WorldContainer<E,Position>> wolInstances;
+	private Collection<T> wolInstances;
 	private boolean running=false;
 	private Collection<Window> openWindows;
 	private Map<String,List<iEvent>> eventsWindow;
@@ -49,10 +49,10 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Ent
 		if(repository!=null){
 			wolInstances=repository.loadInstances();
 		}else{
-			wolInstances = new ArrayList<WorldContainer<E,Position>>();
+			wolInstances = new ArrayList<T>();
 		}
 		if(wolInstances.isEmpty()){
-			WorldContainer<E,Position> newEmptyInstance= wolClass.newInstance();
+			T newEmptyInstance= wolClass.newInstance();
 			newEmptyInstance.init(spacePrecision,timePrecision);
 			if(repository!=null){
 				repository.registry(newEmptyInstance);

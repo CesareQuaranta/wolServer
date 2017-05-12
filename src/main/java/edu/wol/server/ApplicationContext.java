@@ -1,27 +1,33 @@
-package wol.server;
-import java.io.File;
+package edu.wol.server;
+import java.util.Properties;
 
 import javax.annotation.Resource;
-import javax.servlet.annotation.WebFilter;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.annotation.WebListener;
+import javax.sql.DataSource;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScan.Filter;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import wol.dom.WolContainer;
-import wol.dom.space.iPlanetoid;
-import wol.server.connector.ws.WebSocketInitializer;
-import wol.server.repository.KryoRepository;
-import wol.server.repository.WolRepository;
-import wol.starsystem.StarsContainer;
+import edu.wol.dom.WolContainer;
+import edu.wol.dom.space.iPlanetoid;
+import edu.wol.server.repository.JPARepository;
+import edu.wol.server.repository.WolRepository;
+import edu.wol.starsystem.StarDial;
  
 /**
  * An application context Java configuration class. The usage of Java configuration
@@ -32,6 +38,7 @@ import wol.starsystem.StarsContainer;
  * @author Petri Kainulainen
  */
 @Configuration
+@EnableTransactionManagement
 @ComponentScan(basePackages = {"wol.server"},
 useDefaultFilters = false,
 includeFilters = { @ComponentScan.Filter(type = FilterType.ANNOTATION, value=WebListener.class)},
@@ -44,10 +51,9 @@ public class ApplicationContext {
     private static final String VIEW_RESOLVER_SUFFIX = ".jsp";
  
     private static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
-    private static final String PROPERTY_NAME_DATABASE_PASSWORD = "db.password";
     private static final String PROPERTY_NAME_DATABASE_URL = "db.url";
     private static final String PROPERTY_NAME_DATABASE_USERNAME = "db.username";
- 
+    private static final String PROPERTY_NAME_DATABASE_PASSWORD = "db.password";
     private static final String PROPERTY_NAME_HIBERNATE_DIALECT = "hibernate.dialect";
     private static final String PROPERTY_NAME_HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
     private static final String PROPERTY_NAME_HIBERNATE_NAMING_STRATEGY = "hibernate.ejb.naming_strategy";
@@ -63,6 +69,12 @@ public class ApplicationContext {
     private Environment environment;
  
     @Bean
+    public WolContainer wolContainer(){
+    	WolContainerImpl<StarDial,iPlanetoid> wolContainer=new WolContainerImpl<StarDial,iPlanetoid>(StarDial.class,1,1);
+    	return wolContainer;
+    }
+    
+    @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
  
@@ -72,7 +84,6 @@ public class ApplicationContext {
         return messageSource;
     }
     
-   
     /*
     @Bean
     public WolRepository<StarsContainer,iPlanetoid> kryoRepository(){
@@ -83,10 +94,54 @@ public class ApplicationContext {
     	WolRepository<StarsContainer,iPlanetoid> repository=new KryoRepository<StarsContainer,iPlanetoid>(repoPath, StarsContainer.class);
     	return repository;
     }*/
+    @Bean
+    public WolRepository<StarDial,iPlanetoid> jpaRepository(){
+    	WolRepository<StarDial,iPlanetoid> repository=new JPARepository<StarDial,iPlanetoid>(StarDial.class);
+    	return repository;
+    }
     
     @Bean
-    public WolContainer wolContainer(){
-    	WolContainerImpl<StarsContainer,iPlanetoid> wolContainer=new WolContainerImpl<StarsContainer,iPlanetoid>(StarsContainer.class,1,1);
-    	return wolContainer;
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+       LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+       em.setDataSource(dataSource());
+       em.setPackagesToScan(new String[] { "wol.dom" });
+  
+       JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+       em.setJpaVendorAdapter(vendorAdapter);
+       em.setJpaProperties(additionalProperties());
+  
+       return em;
     }
+  
+    @Bean
+    public DataSource dataSource(){
+       DriverManagerDataSource dataSource = new DriverManagerDataSource();
+       dataSource.setDriverClassName(environment.getRequiredProperty(PROPERTY_NAME_DATABASE_DRIVER));
+       dataSource.setUrl(environment.getRequiredProperty(PROPERTY_NAME_DATABASE_URL));
+       dataSource.setUsername( environment.getRequiredProperty(PROPERTY_NAME_DATABASE_USERNAME));
+       dataSource.setPassword( environment.getRequiredProperty(PROPERTY_NAME_DATABASE_PASSWORD));
+       return dataSource;
+    }
+  
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
+       JpaTransactionManager transactionManager = new JpaTransactionManager();
+       transactionManager.setEntityManagerFactory(emf);
+  
+       return transactionManager;
+    }
+  
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+       return new PersistenceExceptionTranslationPostProcessor();
+    }
+  
+    Properties additionalProperties() {
+       Properties properties = new Properties();
+       properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+       properties.setProperty("hibernate.dialect", environment.getRequiredProperty(PROPERTY_NAME_HIBERNATE_DIALECT));
+       return properties;
+    }
+    
+   
 }

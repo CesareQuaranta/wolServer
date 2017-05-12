@@ -1,4 +1,4 @@
-package wol.server;
+package edu.wol.server;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

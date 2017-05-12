@@ -7,6 +7,7 @@
 		    <module name="javax.api"/>
 		    <module name="javax.persistence.api"/>
 		    <module name="javax.transaction.api"/>
+		    <module name="edu.wol.server"/>
         </dependencies>
      <!-- exclude-subsystem prevents a subsystems deployment unit processors running on a deployment -->
      <!-- which gives basically the same effect as removing the subsystem, but it only affects single deployment -->
