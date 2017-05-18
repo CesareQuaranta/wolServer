@@ -25,8 +25,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import edu.wol.dom.WolContainer;
 import edu.wol.dom.space.Planetoid;
-import edu.wol.server.repository.StarsRepository;
-import edu.wol.server.repository.WolRepository;
 import edu.wol.starsystem.StarDial;
  
 /**
@@ -55,6 +53,7 @@ public class ApplicationContext {
     private static final String PROPERTY_NAME_DATABASE_USERNAME = "db.username";
     private static final String PROPERTY_NAME_DATABASE_PASSWORD = "db.password";
     private static final String PROPERTY_NAME_HIBERNATE_DIALECT = "hibernate.dialect";
+    private static final String PROPERTY_NAME_HIBERNATE_DDL_STRATEGY = "hibernate.hbm2ddl.auto";
     private static final String PROPERTY_NAME_HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
     private static final String PROPERTY_NAME_HIBERNATE_NAMING_STRATEGY = "hibernate.ejb.naming_strategy";
     private static final String PROPERTY_NAME_HIBERNATE_SHOW_SQL = "hibernate.show_sql";
@@ -137,7 +136,7 @@ public class ApplicationContext {
   
     Properties additionalProperties() {
        Properties properties = new Properties();
-       properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+       properties.setProperty(PROPERTY_NAME_HIBERNATE_DDL_STRATEGY,environment.getRequiredProperty(PROPERTY_NAME_HIBERNATE_DDL_STRATEGY));
        properties.setProperty("hibernate.dialect", environment.getRequiredProperty(PROPERTY_NAME_HIBERNATE_DIALECT));
        return properties;
     }
