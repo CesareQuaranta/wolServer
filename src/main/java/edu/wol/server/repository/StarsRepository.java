@@ -32,15 +32,15 @@ public class StarsRepository implements WolRepository<StarDial,Planetoid> {
 	}
 
 	@Override
-	public void registry(StarDial newInstance) throws Exception, IOException {
+	public void insert(StarDial newInstance) throws Exception, IOException {
 		manager.persist(newInstance);
 
 	}
 	
 	@Override
-	public void serialize(Collection<StarDial> instances) {
+	public void update(Collection<StarDial> instances) {
 		for(StarDial instance:instances){
-			manager.persist(instance);
+			manager.merge(instance);
 		}
 	}
 

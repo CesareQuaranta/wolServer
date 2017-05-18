@@ -21,11 +21,12 @@ import edu.wol.dom.space.IntVector;
 import edu.wol.dom.space.Movement;
 import edu.wol.dom.space.Position;
 import edu.wol.dom.space.Vector;
-import edu.wol.dom.space.iSpace;
+import edu.wol.dom.space.Space;
 import edu.wol.server.repository.WolRepository;
 
 
 public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> extends WolContainer {
+	volatile boolean shutdown = false;
 	private Class<T> wolClass;
 	private float spacePrecision;
 	private float timePrecision;
@@ -55,7 +56,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 			T newEmptyInstance= wolClass.newInstance();
 			newEmptyInstance.init(spacePrecision,timePrecision);
 			if(repository!=null){
-				repository.registry(newEmptyInstance);
+				repository.insert(newEmptyInstance);
 			}
 			wolInstances.add(newEmptyInstance);
 		}
@@ -63,15 +64,17 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 
 	@Override
 	public void run() {
-		running=true;
-		while(running){
+		while(!shutdown){
 		for(int i=0;i<100;i++){
 			for(WorldContainer<E,Position> curInstance:wolInstances){
-				curInstance.run();
+				shutdown = Thread.currentThread().isInterrupted();
+				if(!shutdown){
+					curInstance.run();
+				}
 			}
 		}
-		if(repository!=null){
-			repository.serialize(wolInstances);//Da valutare se farlo ogni tot o in maniera cachata
+		if(repository!=null && !shutdown){
+			repository.update(wolInstances);//Da valutare se farlo ogni tot o in maniera cachata
 		}
 		}
 	}
@@ -100,7 +103,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 		try {
 			events.add(new BackgroundChange(new URL("http://localhost:8081/shapeRenderer/image/B"+window.getUID())));
 			WorldContainer<E, Position> wc=wolInstances.iterator().next();
-			iSpace<E,Position> space= wc.getSpace();
+			Space<E,Position> space= wc.getSpace();
 			for(int x=0;x<window.getDimensions().getX();x++){
 				for(int y=0;y<window.getDimensions().getY();y++){
 					for(int z=0;z<window.getDimensions().getZ();z++){

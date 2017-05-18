@@ -51,7 +51,7 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEn
 		return instances;
 	}
 	
-	public void registry(T newInstance) throws Exception, IOException{
+	public void insert(T newInstance) throws Exception, IOException{
 		File newFile=new File(basePath,"wol_"+newInstance.hashCode()+".kryo");
 		if(newFile.createNewFile()){
 			internalSerialize(newInstance,newFile);
@@ -59,7 +59,7 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEn
 		
 	}
 	
-	public void serialize(Collection<T> instances){
+	public void update(Collection<T> instances){
 		
 	}
 	

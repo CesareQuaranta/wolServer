@@ -9,7 +9,7 @@ import edu.wol.dom.space.Position;
 
 public interface WolRepository<T extends WorldContainer<E,Position>,E extends WolEntity> {
 	public Collection<T> loadInstances();
-	public void registry(T newInstance) throws Exception, IOException;
-	public void serialize(Collection<T> instances);
+	public void insert(T newInstance) throws Exception, IOException;
+	public void update(Collection<T> instances);
 	public void remove(T instance);
 }
