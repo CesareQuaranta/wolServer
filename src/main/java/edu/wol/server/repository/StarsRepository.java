@@ -48,5 +48,10 @@ public class StarsRepository implements WolRepository<StarDial,Planetoid> {
 	public void remove(StarDial instance) {
 		manager.remove(instance);
 	}
+	
+	@Override
+	public void flush() {
+			manager.flush();
+	}
 
 }

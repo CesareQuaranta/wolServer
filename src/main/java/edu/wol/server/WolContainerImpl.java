@@ -65,17 +65,27 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 	@Override
 	public void run() {
 		while(!shutdown){
-		for(int i=0;i<100;i++){
-			for(WorldContainer<E,Position> curInstance:wolInstances){
-				shutdown = Thread.currentThread().isInterrupted();
-				if(!shutdown){
-					curInstance.run();
+			boolean empty=wolInstances.isEmpty() || (wolInstances.size()==1 && wolInstances.iterator().next().isEmpty());
+			if(!empty){
+				for(int i=0;i<100;i++){
+					for(WorldContainer<E,Position> curInstance:wolInstances){
+						shutdown = Thread.currentThread().isInterrupted();
+						if(!shutdown && !curInstance.isEmpty()){
+							curInstance.run();
+						}
+					}
+				}
+				if(repository!=null && !shutdown){
+					repository.flush();//Da valutare se farlo ogni tot o in maniera cachata
+					//repository.update(wolInstances);
+				}
+			}else{
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					System.out.println("Gently shutdown while sleeping");
 				}
 			}
-		}
-		if(repository!=null && !shutdown){
-			repository.update(wolInstances);//Da valutare se farlo ogni tot o in maniera cachata
-		}
 		}
 	}
 
