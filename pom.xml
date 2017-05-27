@@ -36,6 +36,8 @@
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<jdk.version>1.8</jdk.version>
 		<jetty.version>9.3.18.v20170406</jetty.version><!-- 9.4.4.v20170414 -->
+		<wildfly.version>10.1.0.Final</wildfly.version>
+		<wildfly.maven.plugin.version>1.2.0.Alpha4</wildfly.maven.plugin.version><!-- 1.1.0.Final -->
 		<spring.version>4.3.8.RELEASE</spring.version>
 		<spring-data-jpa.version>1.11.3.RELEASE</spring-data-jpa.version>
 		<hibernate.version>5.2.10.Final</hibernate.version>
@@ -288,6 +290,7 @@
 	        <excludes>
 	          <exclude>application.properties</exclude>
 	          <exclude>logback.xml</exclude>
+	           <exclude>private.key</exclude>
 	        </excludes>
 	      </resource>
 	    </resources>
@@ -313,7 +316,7 @@
 			                <!-- Dependencies>org.springframework.spring</Dependencies> -->
 			            </manifestEntries>
 			        </archive>
-			        <packagingExcludes>WEB-INF/lib/h2-*.jar</packagingExcludes>
+			        <!-- <packagingExcludes>WEB-INF/lib/h2-*.jar</packagingExcludes> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -343,6 +346,79 @@
 			    <useTestScope>true</useTestScope>
 			  </configuration>
 			</plugin>
+			 <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>${wildfly.maven.plugin.version}</version>
+                <configuration>
+                	<modules-path>etc/local/modules</modules-path>
+                	<env>
+					    <jboss.server.log.dir>log</jboss.server.log.dir>
+					</env>
+                	<!--
+                     <beforeDeployment>
+			            <commands>
+			                <command>data-source add jndi-name=java:jboss/datasources/OracleDS name=testDB connection-url=jdbc:h2:mem:datajpa;DB_CLOSE_DELAY=-1 driver-name=h2 user-name=sa</command>
+			            </commands>
+			        </beforeDeployment>
+                	<port>8080</port>
+                	<java-opts>
+                        <java-opt>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</java-opt>
+                    </java-opts>
+                    
+                    <filename>${project.build.finalName}.war</filename>
+                    -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>deploy_jdbc_driver</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>deploy-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>${h2.version}</version>
+                            <name>org.h2.Driver</name>
+                            <driver-name>org.h2.Driver</driver-name>
+                        </configuration>
+                    </execution>
+                   <!-- 
+                    <execution>
+		                <id>add-datasource</id>
+		                <phase>install</phase>
+		                 <goals>
+		                    <goal>add-resource</goal>
+		                </goals>
+		                <configuration>
+		                  <force>false</force>
+		                  <address>subsystem=datasources,data-source=localH2</address>
+		                  <resources>
+		                      <resource>
+		                          <properties>
+		                              <jndi-name>java:jboss/datasources/localH2</jndi-name>
+		                              <enable>true</enable>
+		                              <connection-url>jdbc:h2:mem:datajpa;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
+		                              <driver-name>org.h2.Driver</driver-name>
+		                              <user-name>sa</user-name>
+		                              <password></password>
+		                          </properties>
+		                      </resource>
+		                  </resources>
+		                  <retryFailedDeploymentCount>1</retryFailedDeploymentCount>
+		                </configuration>
+		            </execution> -->
+               </executions>
+            </plugin>
+            <plugin>
+		        <groupId>org.apache.tomcat.maven</groupId>
+		        <artifactId>tomcat7-maven-plugin</artifactId>
+		        <version>2.2</version>
+		        <configuration>
+		          <path>/wol</path>
+		        </configuration>
+		      </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
