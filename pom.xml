@@ -372,7 +372,7 @@
                 <executions>
                     <execution>
                         <id>deploy_jdbc_driver</id>
-                        <phase>install</phase>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>deploy-artifact</goal>
                         </goals>
