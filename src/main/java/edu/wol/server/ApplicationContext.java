@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import edu.wol.dom.WolContainer;
 import edu.wol.dom.space.Planetoid;
+import edu.wol.starsystem.SolarSystem;
 import edu.wol.starsystem.StarDial;
  
 /**
@@ -68,7 +69,7 @@ public class ApplicationContext {
  
     @Bean
     public WolContainer wolContainer(){
-    	WolContainerImpl<StarDial,Planetoid> wolContainer=new WolContainerImpl<StarDial,Planetoid>(StarDial.class,1,1);
+    	WolContainerImpl<SolarSystem,Planetoid> wolContainer=new WolContainerImpl<SolarSystem,Planetoid>(SolarSystem.class,1,1);
     	return wolContainer;
     }
     

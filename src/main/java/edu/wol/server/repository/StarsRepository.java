@@ -15,37 +15,38 @@ import edu.wol.dom.WolEntity;
 import edu.wol.dom.WorldContainer;
 import edu.wol.dom.space.Position;
 import edu.wol.dom.space.Planetoid;
+import edu.wol.starsystem.SolarSystem;
 import edu.wol.starsystem.StarDial;
 
 @Repository
 @Transactional
-public class StarsRepository implements WolRepository<StarDial,Planetoid> {
+public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	@PersistenceContext
     private EntityManager manager;
 	
 	
 
 	@Override
-	public Collection<StarDial> loadInstances() {
-		List<StarDial> instances = manager.createQuery("SELECT a FROM StarDial a", StarDial.class).setMaxResults(10).getResultList();
+	public Collection<SolarSystem> loadInstances() {
+		List<SolarSystem> instances = manager.createQuery("SELECT a FROM SolarSystem a", SolarSystem.class).setMaxResults(10).getResultList();
 		return instances;
 	}
 
 	@Override
-	public void insert(StarDial newInstance) throws Exception, IOException {
+	public void insert(SolarSystem newInstance) throws Exception, IOException {
 		manager.persist(newInstance);
 
 	}
 	
 	@Override
-	public void update(Collection<StarDial> instances) {
-		for(StarDial instance:instances){
+	public void update(Collection<SolarSystem> instances) {
+		for(SolarSystem instance:instances){
 			manager.merge(instance);
 		}
 	}
 
 	@Override
-	public void remove(StarDial instance) {
+	public void remove(SolarSystem instance) {
 		manager.remove(instance);
 	}
 	
