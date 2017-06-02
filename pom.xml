@@ -153,6 +153,11 @@
 		
 		<!-- Hiberante -->
 		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+		    <artifactId>hibernate-jpa-2.1-api</artifactId>
+		    <version>1.0.0.Final</version>
+		</dependency>
+		<dependency>
 		   <groupId>org.hibernate</groupId>
 		   <artifactId>hibernate-entitymanager</artifactId>
 		   <version>${hibernate.version}</version>
@@ -353,8 +358,11 @@
                 <configuration>
                 	<modules-path>etc/local/modules</modules-path>
                 	<env>
-					    <jboss.server.log.dir>log</jboss.server.log.dir>
+					    <jboss.server.log.dir>${basedir}/log</jboss.server.log.dir>
 					</env>
+					<java-opts>
+                        <java-opt>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000</java-opt>
+                    </java-opts>
                 	<!--
                      <beforeDeployment>
 			            <commands>
@@ -362,9 +370,7 @@
 			            </commands>
 			        </beforeDeployment>
                 	<port>8080</port>
-                	<java-opts>
-                        <java-opt>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</java-opt>
-                    </java-opts>
+                	
                     
                     <filename>${project.build.finalName}.war</filename>
                     -->
