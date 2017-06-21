@@ -31,7 +31,7 @@ public class UserInterfeceImpl implements UserInterface {
 			if(user!=null){
 				return user;
 			}else{//New User
-				Prospective p=new Prospective();//TODO Prospective factory
+				Prospective p=new Prospective(null);//TODO Prospective factory
 				user = new User(username,p);
 				try {
 					userRepo.insert(user);
