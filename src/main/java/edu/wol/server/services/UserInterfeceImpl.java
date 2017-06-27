@@ -14,6 +14,7 @@ import edu.wol.dom.commands.GravityPower;
 import edu.wol.dom.services.UserEventListener;
 import edu.wol.dom.services.UserInterface;
 import edu.wol.dom.shape.AsteroidShape;
+import edu.wol.dom.shape.AsteroidShapeFactory;
 import edu.wol.dom.space.Asteroid;
 import edu.wol.dom.space.Position;
 import edu.wol.server.repository.UserRepository;
@@ -67,8 +68,7 @@ public class UserInterfeceImpl implements UserInterface {
 			WorldContainer<WolEntity,Position> wol = user.getProspective().getWol();
 			if(wol!=null){
 				Asteroid a = new Asteroid(gp.getMagnitudo(),gp.getMagnitudo());
-				AsteroidShape s= new AsteroidShape();
-				a.setShape(s);
+				a.setShape(AsteroidShapeFactory.generateShape());
 				wol.insertEntity((Position) gp.getPosition(), a);
 			}
 		}else{
