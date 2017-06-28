@@ -68,7 +68,7 @@ public class UserInterfeceImpl implements UserInterface {
 			WorldContainer<WolEntity,Position> wol = user.getProspective().getWol();
 			if(wol!=null){
 				Asteroid a = new Asteroid(gp.getMagnitudo(),gp.getMagnitudo());
-				a.setShape(AsteroidShapeFactory.generateShape());
+				a.setShape(AsteroidShapeFactory.getInstance().generateShape());
 				wol.insertEntity((Position) gp.getPosition(), a);
 			}
 		}else{
