@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.wol.dom.WolContainer;
+import edu.wol.dom.WorldContainer;
 import edu.wol.dom.space.Planetoid;
 import edu.wol.starsystem.SolarSystem;
 
@@ -27,7 +28,7 @@ public class StartUp implements ApplicationListener<ApplicationContextEvent> {
 		if(event instanceof ContextStartedEvent || event instanceof ContextRefreshedEvent){
 			try {
 				ctx = (WebApplicationContext) event.getApplicationContext();
-				((WolContainerImpl<?,?>)wolContainer).init();
+				wolContainer.init();
 				wolThread=new Thread(wolContainer,"WolThread");
 				wolThread.setContextClassLoader(ClassLoader.getSystemClassLoader());
 				wolThread.start();
