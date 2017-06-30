@@ -20,6 +20,7 @@ import edu.wol.starsystem.SolarSystem;
 import edu.wol.starsystem.StarDial;
 
 @Repository
+@Transactional
 public class UserRepository {
 	@PersistenceContext
     private EntityManager manager;
