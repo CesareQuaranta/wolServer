@@ -18,9 +18,11 @@ import edu.wol.dom.services.UserInterface;
 import edu.wol.dom.shape.AsteroidShape;
 import edu.wol.dom.shape.AsteroidShapeFactory;
 import edu.wol.dom.space.Asteroid;
+import edu.wol.dom.space.Planetoid;
 import edu.wol.dom.space.Position;
 import edu.wol.server.repository.UserRepository;
 import edu.wol.server.repository.WolRepository;
+import edu.wol.starsystem.SolarSystem;
 @Component
 public class UserInterfeceImpl implements UserInterface {
 	final static Logger logger = LoggerFactory.getLogger(UserInterfeceImpl.class);
@@ -28,7 +30,7 @@ public class UserInterfeceImpl implements UserInterface {
 	@Autowired
 	private UserRepository userRepo;
 	@Autowired
-	private WolRepository<WorldContainer<WolEntity,Position>,WolEntity> wolRepo;
+	private WolRepository<SolarSystem,Planetoid> wolRepo;
 	@Override
 	
 	public User loadUser(String username) {
@@ -37,7 +39,7 @@ public class UserInterfeceImpl implements UserInterface {
 			if(user!=null){
 				return user;
 			}else{//New User
-				WorldContainer<WolEntity,Position> wol=wolRepo.loadInstances().iterator().next();
+				SolarSystem wol=wolRepo.loadInstances().iterator().next();
 				Prospective p=new Prospective(null);//TODO Prospective factory
 				p.getPosition().setZ(5);
 				p.setWol(wol);
@@ -67,7 +69,7 @@ public class UserInterfeceImpl implements UserInterface {
 	public void executeUserCommand(User user, Command com) {
 		if(com instanceof GravityPower){
 			GravityPower gp=(GravityPower)com;
-			WorldContainer<WolEntity,Position> wol = user.getProspective().getWol();
+			SolarSystem wol = (SolarSystem) user.getProspective().getWol();
 			if(wol!=null){
 				Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 				a.setShape(AsteroidShapeFactory.getInstance().generateShape());
