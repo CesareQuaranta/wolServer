@@ -58,7 +58,9 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 
 	@Override
 	public SolarSystem loadInstance(long id) {
-		return manager.find(SolarSystem.class, id);
+		SolarSystem instance= manager.find(SolarSystem.class, id);
+		//TODO initialize?
+		return instance;
 	}
 
 }

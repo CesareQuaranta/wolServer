@@ -34,6 +34,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.WebApplicationInitializer;
@@ -63,7 +64,7 @@ public class AppInitializer implements WebApplicationInitializer,ServletContaine
 		try {
 		// Make context listens for servlet events
 	   servletContext.addListener(loaderListener);
-	   
+	   servletContext.addFilter("HibernataLazyFilter", OpenEntityManagerInViewFilter.class);
 	   //Search for WebListners
 	   for (Map.Entry<String, Object> entry : ctx.getBeansWithAnnotation(WebListener.class).entrySet()){
 		   System.out.println("Registry WebListner  "+entry.getKey());
