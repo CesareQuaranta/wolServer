@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
@@ -64,7 +67,10 @@ public class AppInitializer implements WebApplicationInitializer,ServletContaine
 		try {
 		// Make context listens for servlet events
 	   servletContext.addListener(loaderListener);
-	   servletContext.addFilter("HibernataLazyFilter", OpenEntityManagerInViewFilter.class);
+	   //Hibernate lazy init filter?
+	   FilterRegistration fr=servletContext.addFilter("OpenEntityManagerInViewFilter", OpenEntityManagerInViewFilter.class);
+	   fr.setInitParameter("entityManagerFactoryBeanName", "entityManagerFactory");
+	   fr.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 	   //Search for WebListners
 	   for (Map.Entry<String, Object> entry : ctx.getBeansWithAnnotation(WebListener.class).entrySet()){
 		   System.out.println("Registry WebListner  "+entry.getKey());
