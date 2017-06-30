@@ -58,7 +58,6 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, noRollbackFor=Exception.class)
 	public SolarSystem loadInstance(long id) {
 		SolarSystem instance= manager.find(SolarSystem.class, id);
 		//TODO initialize?

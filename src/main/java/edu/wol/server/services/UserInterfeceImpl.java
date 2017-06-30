@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.wol.dom.Prospective;
 import edu.wol.dom.User;
@@ -26,6 +28,7 @@ import edu.wol.server.repository.UserRepository;
 import edu.wol.server.repository.WolRepository;
 import edu.wol.starsystem.SolarSystem;
 @Component
+@Transactional(propagation=Propagation.REQUIRED, readOnly=false, noRollbackFor=Exception.class)
 public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 	final static Logger logger = LoggerFactory.getLogger(UserInterfeceImpl.class);
 	
@@ -80,10 +83,10 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 				if(wol!=null){
 					Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 					a.setShape(AsteroidShapeFactory.getInstance().generateShape());
-					//FIXME Workarround lazy load
+					/*FIXME Workarround lazy load
 					SolarSystemPhisycs sp=wol.getPhisycs();
 					Hibernate.initialize(sp);
-					Hibernate.initialize(sp.getPlanets());
+					Hibernate.initialize(sp.getPlanets());*/
 					wol.insertEntity((Position) gp.getPosition(), a);
 				}
 			}
