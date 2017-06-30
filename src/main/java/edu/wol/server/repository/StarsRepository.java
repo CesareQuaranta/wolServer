@@ -64,4 +64,9 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 		return instance;
 	}
 
+	@Override
+	public void insert(Planetoid newInstance) throws Exception, IOException {
+		manager.persist(newInstance);
+	}
+
 }

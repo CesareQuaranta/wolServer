@@ -1,5 +1,6 @@
 package edu.wol.server.services;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import org.hibernate.Hibernate;
@@ -74,7 +75,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 	}
 
 	@Override
-	public void executeUserCommand(User user, Command com) {
+	public void executeUserCommand(User user, Command com) throws IOException, Exception {
 		if(com instanceof GravityPower){
 			GravityPower gp=(GravityPower)com;
 			String wolID= user.getProspective().getWolID();
@@ -83,6 +84,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 				if(wol!=null){
 					Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 					a.setShape(AsteroidShapeFactory.getInstance().generateShape());
+					wolRepo.insert(a);
 					wol.insertEntity((Position) gp.getPosition(), a);
 				}
 			}

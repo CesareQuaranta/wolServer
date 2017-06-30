@@ -11,6 +11,7 @@ public interface WolRepository<T extends WorldContainer<E,Position>,E extends Wo
 	public Collection<T> loadInstances();
 	public T loadInstance(long id);
 	public void insert(T newInstance) throws Exception, IOException;
+	public void insert(E newInstance) throws Exception, IOException;
 	public void update(Collection<T> instances);
 	public void remove(T instance);
 	void flush();

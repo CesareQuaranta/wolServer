@@ -87,4 +87,10 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEn
 		return null;
 	}
 
+	@Override
+	public void insert(E newInstance) throws Exception, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
