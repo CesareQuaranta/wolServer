@@ -1,5 +1,7 @@
 package edu.wol.server.services;
 
+import java.util.Collections;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +69,7 @@ public class UserInterfeceImpl implements UserInterface {
 			GravityPower gp=(GravityPower)com;
 			WorldContainer<WolEntity,Position> wol = user.getProspective().getWol();
 			if(wol!=null){
-				Asteroid a = new Asteroid(gp.getMagnitudo(),gp.getMagnitudo());
+				Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 				a.setShape(AsteroidShapeFactory.getInstance().generateShape());
 				wol.insertEntity((Position) gp.getPosition(), a);
 			}
