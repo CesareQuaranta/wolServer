@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.wol.dom.User;
@@ -57,6 +58,7 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, noRollbackFor=Exception.class)
 	public SolarSystem loadInstance(long id) {
 		SolarSystem instance= manager.find(SolarSystem.class, id);
 		//TODO initialize?

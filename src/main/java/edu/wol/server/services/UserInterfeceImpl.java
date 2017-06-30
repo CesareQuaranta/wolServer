@@ -21,6 +21,7 @@ import edu.wol.dom.shape.AsteroidShapeFactory;
 import edu.wol.dom.space.Asteroid;
 import edu.wol.dom.space.Planetoid;
 import edu.wol.dom.space.Position;
+import edu.wol.physics.starsystem.SolarSystemPhisycs;
 import edu.wol.server.repository.UserRepository;
 import edu.wol.server.repository.WolRepository;
 import edu.wol.starsystem.SolarSystem;
@@ -80,8 +81,9 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 					Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 					a.setShape(AsteroidShapeFactory.getInstance().generateShape());
 					//FIXME Workarround lazy load
-					Hibernate.initialize(wol.getPhisycs());
-					Hibernate.initialize(wol.getPhisycs().getPlanets());
+					SolarSystemPhisycs sp=wol.getPhisycs();
+					Hibernate.initialize(sp);
+					Hibernate.initialize(sp.getPlanets());
 					wol.insertEntity((Position) gp.getPosition(), a);
 				}
 			}
