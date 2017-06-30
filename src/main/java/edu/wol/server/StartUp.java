@@ -11,12 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.wol.dom.WolContainer;
+import edu.wol.dom.space.Planetoid;
+import edu.wol.starsystem.SolarSystem;
 
 @Component
 public class StartUp implements ApplicationListener<ApplicationContextEvent> {
 	final static Logger logger = LoggerFactory.getLogger(StartUp.class);
 	@Autowired 
-	private WolContainer wolContainer;
+	private WolContainer<SolarSystem,Planetoid> wolContainer;
 	private Thread wolThread;
 	private WebApplicationContext ctx=null;
 	

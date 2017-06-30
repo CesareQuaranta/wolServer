@@ -1,58 +1,46 @@
 package edu.wol.server.services;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
+import edu.wol.dom.Phenomen;
 import edu.wol.dom.Prospective;
 import edu.wol.dom.User;
-import edu.wol.dom.WolEntity;
-import edu.wol.dom.WorldContainer;
+import edu.wol.dom.WolContainer;
 import edu.wol.dom.commands.Command;
 import edu.wol.dom.commands.GravityPower;
 import edu.wol.dom.services.UserEventListener;
 import edu.wol.dom.services.UserInterface;
-import edu.wol.dom.shape.AsteroidShape;
 import edu.wol.dom.shape.AsteroidShapeFactory;
 import edu.wol.dom.space.Asteroid;
 import edu.wol.dom.space.Planetoid;
 import edu.wol.dom.space.Position;
-import edu.wol.physics.starsystem.SolarSystemPhisycs;
 import edu.wol.server.repository.UserRepository;
-import edu.wol.server.repository.WolRepository;
 import edu.wol.starsystem.SolarSystem;
 @Component
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false, noRollbackFor=Exception.class)
-public class UserInterfeceImpl implements UserInterface<SolarSystem> {
+public class UserInterfeceImpl implements UserInterface<SolarSystem,Planetoid> {
 	final static Logger logger = LoggerFactory.getLogger(UserInterfeceImpl.class);
 	
 	@Autowired
 	private UserRepository userRepo;
 	@Autowired
-	private WolRepository<SolarSystem,Planetoid> wolRepo;
+	private WolContainer<SolarSystem,Planetoid> wolContainer;
 	@Override
 	
-	public User loadUser(String username) {
+	public User loadUser(String username) throws IOException, Exception {
 		if(userRepo!=null){
 			User user = userRepo.find(username);
 			if(user!=null){
 				return user;
 			}else{//New User
-				SolarSystem wol=wolRepo.loadInstances().iterator().next();
-				String wolID=null;
-				if(wol!=null){
-					wolID="SolarSystem-"+wol.getID();
-				}
-				Prospective p=new Prospective(wolID);//TODO Prospective factory
-				p.getPosition().setZ(5);
-				user = new User(username,p);
+				Prospective newProspective=wolContainer.generateNewWol();
+				user = new User(username,newProspective);
 				try {
 					userRepo.insert(user);
 					return user;
@@ -76,21 +64,23 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 
 	@Override
 	public void executeUserCommand(User user, Command com) throws IOException, Exception {
-		if(com instanceof GravityPower){
+		if(com instanceof GravityPower){//TODO Da rivedere
 			GravityPower gp=(GravityPower)com;
 			String wolID= user.getProspective().getWolID();
 			if(wolID!=null){
-				SolarSystem wol= wolRepo.loadInstance(Long.parseLong(wolID.split("-")[1]));
-				if(wol!=null){
-					Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
-					a.setShape(AsteroidShapeFactory.getInstance().generateShape());
-					wolRepo.insert(a);
-					wol.insertEntity((Position) gp.getPosition(), a);
-				}
+				long WolID=Long.parseLong(wolID.split("-")[1]);
+				Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
+				a.setShape(AsteroidShapeFactory.getInstance().generateShape());
+				wolContainer.insertEntity(a, WolID, (Position) gp.getPosition());
 			}
 		}else{
 			logger.debug("Unsupported command "+com.toString());
 		}
+	}
+	
+	@Override
+	public Collection<Phenomen<Planetoid>> getAllPhenomen(long wolID) throws IOException, Exception {
+		return wolContainer.getAllPhenomen(wolID);
 	}
 
 	@Override
@@ -103,9 +93,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 		logger.debug("removeUserListner unimplemented");
 	}
 
-	@Override
-	public SolarSystem loadWol(long ID) {
-		return wolRepo.loadInstance(ID);
-	}
+	
+
 
 }

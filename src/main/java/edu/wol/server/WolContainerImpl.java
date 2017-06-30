@@ -1,5 +1,6 @@
 package edu.wol.server;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,7 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import edu.wol.dom.Phenomen;
+import edu.wol.dom.Prospective;
 import edu.wol.dom.WolEntity;
 import edu.wol.dom.Window;
 import edu.wol.dom.WolContainer;
@@ -24,8 +30,8 @@ import edu.wol.dom.space.Vector;
 import edu.wol.dom.space.Space;
 import edu.wol.server.repository.WolRepository;
 
-
-public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> extends WolContainer {
+@Transactional(propagation=Propagation.REQUIRED, readOnly=false, noRollbackFor=Exception.class)
+public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> extends WolContainer<T,E> {
 	volatile boolean shutdown = false;
 	private Class<T> wolClass;
 	private float spacePrecision;
@@ -36,7 +42,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 	private Map<String,List<iEvent>> eventsWindow;
 	
 	@Autowired(required=false)
-	private WolRepository<T,E> repository;//TODO 
+	private WolRepository<T,E> repository;
 	
 	public WolContainerImpl(Class<T> wolClass,float spacePrecision, float timePrecision) {
 		this.wolClass=wolClass;
@@ -53,12 +59,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 			wolInstances = new ArrayList<T>();
 		}
 		if(wolInstances.isEmpty()){
-			T newEmptyInstance= wolClass.newInstance();
-			newEmptyInstance.init(spacePrecision,timePrecision);
-			if(repository!=null){
-				repository.insert(newEmptyInstance);
-			}
-			wolInstances.add(newEmptyInstance);
+			internalGenerteWol();
 		}
 	}
 
@@ -88,16 +89,14 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 			}
 		}
 	}
-
-	public Window openWindow(Position pos){
-		Window newWindow=new Window(pos,new IntVector(10,10,10));
-		initWindow(newWindow);
-		return newWindow;
-	}
 	
-	public List<iEvent> getEvents(String windowIdentifier){
-		return eventsWindow.get(windowIdentifier);
+	public Prospective generateNewWol() throws IOException, Exception{
+		T newIstance=internalGenerteWol();
+		Prospective p=new Prospective("SolarSystem-"+newIstance.getID());//TODO Prospective factory
+		p.getPosition().setZ(5);
+		return p;
 	}
+
 	public boolean isRunning() {
 		return running;
 	}
@@ -106,30 +105,48 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 		this.running = false;
 	}
 	
-	private void initWindow(Window window){
-		openWindows.add(window);
-		List<iEvent> events=new ArrayList<iEvent>();
-		eventsWindow.put(window.getUID(), events);
-		try {
-			events.add(new BackgroundChange(new URL("http://localhost:8081/shapeRenderer/image/B"+window.getUID())));
-			WorldContainer<E, Position> wc=wolInstances.iterator().next();
-			Space<E,Position> space= wc.getSpace();
-			for(int x=0;x<window.getDimensions().getX();x++){
-				for(int y=0;y<window.getDimensions().getY();y++){
-					for(int z=0;z<window.getDimensions().getZ();z++){
-						E curEntity=space.getEntity(new Position(x,y,z));
-						if(curEntity!=null){
-							Movement<E> startPositionEvent=new Movement<E>(curEntity,new Vector());
-							events.add(startPositionEvent);
-						}
-					}
+	@Override
+	public Collection<Phenomen<E>> getAllPhenomen(long wolID)
+			throws IOException, Exception {
+		T wol=findWol(wolID);
+		if(wol!=null){
+			Collection<E> ce= wol.getSpace().getAllEntities();
+			Collection<Phenomen<E>> phenomens=new ArrayList<Phenomen<E>>(ce.size());
+			for(E e : ce){
+					Position p=wol.getSpace().getPosition(e);
+					Phenomen<E> ph=new Phenomen<E>();
+					ph.setEntity(e);
+					ph.setPosition(p);
+					phenomens.add(ph);
 				}
+			return phenomens;
 			}
-			
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return null;
 	}
 
+	@Override
+	public void insertEntity(E entity,long wolID,Position position) throws IOException, Exception {
+		T wol=findWol(wolID);
+		if(wol!=null){
+			repository.insert(entity);
+			wol.insertEntity(position, entity);
+		}	
+	}
+	private T internalGenerteWol() throws IOException, Exception{
+		T newEmptyInstance= wolClass.newInstance();
+		newEmptyInstance.init(spacePrecision,timePrecision);
+		if(repository!=null){
+			repository.insert(newEmptyInstance);
+		}
+		wolInstances.add(newEmptyInstance);
+		return newEmptyInstance;
+	}
+	private T findWol(long wolID){
+		for(T curInstance: wolInstances){
+			if(curInstance.getID()==wolID){
+				return curInstance;
+			}
+		}
+		return null;
+	}
 }
