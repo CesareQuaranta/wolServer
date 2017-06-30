@@ -81,4 +81,10 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEn
 		
 	}
 
+	@Override
+	public T loadInstance(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

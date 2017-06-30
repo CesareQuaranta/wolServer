@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.wol.dom.User;
 import edu.wol.dom.WolEntity;
 import edu.wol.dom.WorldContainer;
 import edu.wol.dom.space.Position;
@@ -53,6 +54,11 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	@Override
 	public void flush() {
 			manager.flush();
+	}
+
+	@Override
+	public SolarSystem loadInstance(long id) {
+		return manager.find(SolarSystem.class, id);
 	}
 
 }

@@ -24,7 +24,7 @@ import edu.wol.server.repository.UserRepository;
 import edu.wol.server.repository.WolRepository;
 import edu.wol.starsystem.SolarSystem;
 @Component
-public class UserInterfeceImpl implements UserInterface {
+public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 	final static Logger logger = LoggerFactory.getLogger(UserInterfeceImpl.class);
 	
 	@Autowired
@@ -40,9 +40,12 @@ public class UserInterfeceImpl implements UserInterface {
 				return user;
 			}else{//New User
 				SolarSystem wol=wolRepo.loadInstances().iterator().next();
-				Prospective p=new Prospective(null);//TODO Prospective factory
+				String wolID=null;
+				if(wol!=null){
+					wolID="SolarSystem-"+wol.getID();
+				}
+				Prospective p=new Prospective(wolID);//TODO Prospective factory
 				p.getPosition().setZ(5);
-				p.setWol(wol);
 				user = new User(username,p);
 				try {
 					userRepo.insert(user);
@@ -69,11 +72,14 @@ public class UserInterfeceImpl implements UserInterface {
 	public void executeUserCommand(User user, Command com) {
 		if(com instanceof GravityPower){
 			GravityPower gp=(GravityPower)com;
-			SolarSystem wol = (SolarSystem) user.getProspective().getWol();
-			if(wol!=null){
-				Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
-				a.setShape(AsteroidShapeFactory.getInstance().generateShape());
-				wol.insertEntity((Position) gp.getPosition(), a);
+			String wolID= user.getProspective().getWolID();
+			if(wolID!=null){
+				SolarSystem wol= wolRepo.loadInstance(Long.parseLong(wolID.split("-")[1]));
+				if(wol!=null){
+					Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
+					a.setShape(AsteroidShapeFactory.getInstance().generateShape());
+					wol.insertEntity((Position) gp.getPosition(), a);
+				}
 			}
 		}else{
 			logger.debug("Unsupported command "+com.toString());
@@ -88,6 +94,11 @@ public class UserInterfeceImpl implements UserInterface {
 	@Override
 	public void removeUserListner(User user, UserEventListener listener) {
 		logger.debug("removeUserListner unimplemented");
+	}
+
+	@Override
+	public SolarSystem loadWol(long ID) {
+		return wolRepo.loadInstance(ID);
 	}
 
 }
