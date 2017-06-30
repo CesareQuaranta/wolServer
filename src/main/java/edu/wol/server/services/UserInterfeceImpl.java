@@ -74,6 +74,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, noRollbackFor=Exception.class)
 	public void executeUserCommand(User user, Command com) {
 		if(com instanceof GravityPower){
 			GravityPower gp=(GravityPower)com;
