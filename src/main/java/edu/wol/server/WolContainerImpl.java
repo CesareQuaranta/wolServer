@@ -31,7 +31,7 @@ import edu.wol.dom.space.Space;
 import edu.wol.server.repository.WolRepository;
 
 @Transactional(propagation=Propagation.REQUIRED, readOnly=false, noRollbackFor=Exception.class)
-public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> extends WolContainer<T,E> {
+public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolContainer<T,E> {
 	volatile boolean shutdown = false;
 	private Class<T> wolClass;
 	private float spacePrecision;
