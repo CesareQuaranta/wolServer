@@ -68,7 +68,7 @@ public class ApplicationContext {
     private Environment environment;
  
     @Bean
-    public WolContainer<SolarSystem,Planetoid> wolContainer(){
+    public WolContainer wolContainer(){
     	WolContainerImpl<SolarSystem,Planetoid> wolContainer=new WolContainerImpl<SolarSystem,Planetoid>(SolarSystem.class,1,1);
     	return wolContainer;
     }

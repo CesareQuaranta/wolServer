@@ -38,8 +38,6 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 	private float timePrecision;
 	private Collection<T> wolInstances;
 	private boolean running=false;
-	private Collection<Window> openWindows;
-	private Map<String,List<iEvent>> eventsWindow;
 	
 	@Autowired(required=false)
 	private WolRepository<T,E> repository;
@@ -48,8 +46,6 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 		this.wolClass=wolClass;
 		this.spacePrecision=spacePrecision;
 		this.timePrecision=timePrecision;
-		openWindows=new LinkedList<Window>();
-		eventsWindow=new HashMap<String,List<iEvent>>();
 	}
 	
 	public void init() throws Exception{
