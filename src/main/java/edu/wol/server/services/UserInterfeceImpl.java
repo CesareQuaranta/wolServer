@@ -83,10 +83,6 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 				if(wol!=null){
 					Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 					a.setShape(AsteroidShapeFactory.getInstance().generateShape());
-					/*FIXME Workarround lazy load
-					SolarSystemPhisycs sp=wol.getPhisycs();
-					Hibernate.initialize(sp);
-					Hibernate.initialize(sp.getPlanets());*/
 					wol.insertEntity((Position) gp.getPosition(), a);
 				}
 			}
