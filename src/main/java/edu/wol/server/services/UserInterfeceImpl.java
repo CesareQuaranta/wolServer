@@ -2,6 +2,7 @@ package edu.wol.server.services;
 
 import java.util.Collections;
 
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,9 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem> {
 				if(wol!=null){
 					Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 					a.setShape(AsteroidShapeFactory.getInstance().generateShape());
+					//FIXME Workarround lazy load
+					Hibernate.initialize(wol.getPhisycs());
+					Hibernate.initialize(wol.getPhisycs().getPlanets());
 					wol.insertEntity((Position) gp.getPosition(), a);
 				}
 			}
