@@ -65,6 +65,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 
 	@Override
 	public void run() {
+		long refreshTimestamp=System.currentTimeMillis();
 		while(!shutdown){
 			boolean empty=wolInstances.isEmpty() || (wolInstances.size()==1 && wolInstances.iterator().next().isEmpty());
 			if(!empty){
@@ -76,9 +77,10 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 						}
 					}
 				}
-				if(repository!=null && !shutdown){
+				if(repository!=null && !shutdown && (System.currentTimeMillis()-refreshTimestamp)>30000){
 					repository.flush();//Da valutare se farlo ogni tot o in maniera cachata
 					//repository.update(wolInstances);
+					refreshTimestamp=System.currentTimeMillis();
 				}
 			}else{
 				try {
