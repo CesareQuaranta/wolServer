@@ -31,7 +31,7 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEn
 		kryo = new Kryo();
 	}
 	
-	public Collection<T> loadInstances(){
+	public Collection<T> loadInstances(String nodeID){
 		Collection<T> instances=new ArrayList<T>();
 		if(basePath != null){
 			for(File curFile:basePath.listFiles()){

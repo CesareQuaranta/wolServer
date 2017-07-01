@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,9 +32,10 @@ import edu.wol.dom.space.Vector;
 import edu.wol.dom.space.Space;
 import edu.wol.server.repository.WolRepository;
 
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Exception.class)
 public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolContainer<T,E> {
+	final static Logger logger = LoggerFactory.getLogger(WolContainerImpl.class);
 	volatile boolean shutdown = false;
+	private String nodeID;
 	private Class<T> wolClass;
 	private float spacePrecision;
 	private float timePrecision;
@@ -42,7 +45,8 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 	@Autowired(required=false)
 	private WolRepository<T,E> repository;
 	
-	public WolContainerImpl(Class<T> wolClass,float spacePrecision, float timePrecision) {
+	public WolContainerImpl(Class<T> wolClass,String nodeID,float spacePrecision, float timePrecision) {
+		this.nodeID=nodeID;
 		this.wolClass=wolClass;
 		this.spacePrecision=spacePrecision;
 		this.timePrecision=timePrecision;
@@ -50,7 +54,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 	
 	public void init() throws Exception{
 		if(repository!=null){
-			wolInstances=repository.loadInstances();
+			wolInstances=repository.loadInstances(this.nodeID);
 		}else{
 			wolInstances = new ArrayList<T>();
 		}
@@ -86,7 +90,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 		}
 	}
 	
-	public Prospective generateNewWol() throws IOException, Exception{
+	public Prospective associateNewWolProspective() throws IOException, Exception{
 		T newIstance=internalGenerteWol();
 		Prospective p=new Prospective("SolarSystem-"+newIstance.getID());//TODO Prospective factory
 		p.getPosition().setZ(5);

@@ -39,7 +39,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem,Planetoid> {
 			if(user!=null){
 				return user;
 			}else{//New User
-				Prospective newProspective=wolContainer.generateNewWol();
+				Prospective newProspective=wolContainer.associateNewWolProspective();
 				user = new User(username,newProspective);
 				try {
 					userRepo.insert(user);

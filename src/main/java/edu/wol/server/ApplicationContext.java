@@ -6,6 +6,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.servlet.annotation.WebListener;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -48,7 +50,9 @@ public class ApplicationContext {
      
     private static final String VIEW_RESOLVER_PREFIX = "/WEB-INF/jsp/";
     private static final String VIEW_RESOLVER_SUFFIX = ".jsp";
- 
+   
+    private static final String PROPERTY_NAME_NODE_ID = "node.id";
+    
     private static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
     private static final String PROPERTY_NAME_DATABASE_URL = "db.url";
     private static final String PROPERTY_NAME_DATABASE_USERNAME = "db.username";
@@ -64,12 +68,18 @@ public class ApplicationContext {
  
     private static final String PROPERTY_NAME_REPOSITORY_PATH = "repository.path";
     
+    final static Logger logger = LoggerFactory.getLogger(ApplicationContext.class);
     @Resource
     private Environment environment;
  
     @Bean
     public WolContainer<SolarSystem,Planetoid> wolContainer(){
-    	WolContainerImpl<SolarSystem,Planetoid> wolContainer=new WolContainerImpl<SolarSystem,Planetoid>(SolarSystem.class,1,1);
+    	String nodeID=environment.getRequiredProperty(PROPERTY_NAME_NODE_ID);
+    	if(nodeID==null){
+    		logger.warn("No Property "+PROPERTY_NAME_NODE_ID+" found, using default");
+    		nodeID="DEFAULT-NODE-ID";
+    	}
+    	WolContainerImpl<SolarSystem,Planetoid> wolContainer=new WolContainerImpl<SolarSystem,Planetoid>(SolarSystem.class,nodeID,1,1);
     	return wolContainer;
     }
     

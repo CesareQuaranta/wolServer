@@ -6,13 +6,17 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.wol.dom.space.Planetoid;
 import edu.wol.starsystem.SolarSystem;
 
 @Repository
+@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Exception.class)
 public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	@PersistenceContext
     private EntityManager manager;
@@ -20,9 +24,11 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	
 
 	@Override
-	public Collection<SolarSystem> loadInstances() {
-		List<SolarSystem> instances = manager.createQuery("SELECT a FROM SolarSystem a", SolarSystem.class).setMaxResults(10).getResultList();
-		return instances;
+	public Collection<SolarSystem> loadInstances(String nodeID) {
+		 TypedQuery<SolarSystem> query = manager.createQuery("SELECT s FROM SolarSystem s WHERE s.nodeID = :nodeID", SolarSystem.class);
+				query.setParameter("nodeID", nodeID);
+		 		query.setMaxResults(100);//TODO settare max load
+		return query.getResultList();
 	}
 
 	@Override
