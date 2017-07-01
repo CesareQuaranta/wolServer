@@ -74,11 +74,6 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 						shutdown = Thread.currentThread().isInterrupted();
 						if(!shutdown && !curInstance.isEmpty()){
 							curInstance.run();
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								System.out.println("Gently shutdown while sleeping");
-							}
 						}
 					}
 				}
@@ -86,6 +81,11 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 					repository.flush();//Da valutare se farlo ogni tot o in maniera cachata
 					//repository.update(wolInstances);
 					refreshTimestamp=System.currentTimeMillis();
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					System.out.println("Gently shutdown while sleeping");
 				}
 			}else{
 				try {
