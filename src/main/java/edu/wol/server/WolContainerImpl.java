@@ -132,6 +132,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 		if(wol!=null){
 			repository.insert(entity);
 			wol.insertEntity(position, entity);
+			repository.update(wol);
 		}	
 	}
 	private T internalGenerteWol() throws IOException, Exception{

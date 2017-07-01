@@ -93,4 +93,10 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEn
 		
 	}
 
+	@Override
+	public void update(T instance) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

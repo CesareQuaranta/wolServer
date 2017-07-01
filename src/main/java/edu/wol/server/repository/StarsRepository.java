@@ -36,7 +36,10 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 		manager.persist(newInstance);
 
 	}
-	
+	@Override
+	public void update(SolarSystem instance) {
+		manager.merge(instance);
+	}
 	@Override
 	public void update(Collection<SolarSystem> instances) {
 		for(SolarSystem instance:instances){
@@ -65,5 +68,7 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	public void insert(Planetoid newInstance) throws Exception, IOException {
 		manager.persist(newInstance);
 	}
+
+	
 
 }
