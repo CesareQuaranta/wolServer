@@ -72,6 +72,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem,Planetoid> {
 				Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 				a.setShape(AsteroidShapeFactory.getInstance().generateShape());
 				wolContainer.insertEntity(a, WolID, (Position) gp.getPosition());
+				logger.debug("Test insert entity in position "+((Position)gp.getPosition()).toString()+" OK");
 			}
 		}else{
 			logger.debug("Unsupported command "+com.toString());
