@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.wol.dom.space.Planetoid;
+import edu.wol.dom.space.Position;
 import edu.wol.starsystem.SolarSystem;
 
 @Repository
@@ -68,7 +69,9 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	public void insert(Planetoid newInstance) throws Exception, IOException {
 		manager.persist(newInstance);
 	}
-
-	
+	@Override
+	public void insert(Position newPosition) throws Exception, IOException {
+		manager.persist(newPosition);
+	}
 
 }

@@ -136,6 +136,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 		T wol=findWol(wolID);
 		if(wol!=null){
 			repository.insert(entity);
+			repository.insert(position);
 			wol.insertEntity(position, entity);
 			repository.update(wol);
 		}	
