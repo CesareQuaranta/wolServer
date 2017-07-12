@@ -6,6 +6,7 @@ import java.util.Collection;
 import edu.wol.dom.WolEntity;
 import edu.wol.dom.WorldContainer;
 import edu.wol.dom.space.Position;
+import edu.wol.dom.space.Vector3f;
 
 public interface WolRepository<T extends WorldContainer<E,Position>,E extends WolEntity> {
 	public Collection<T> loadInstances(String nodeID);

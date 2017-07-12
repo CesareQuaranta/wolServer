@@ -18,6 +18,7 @@ import com.esotericsoftware.kryo.io.Output;
 import edu.wol.dom.WolEntity;
 import edu.wol.dom.WorldContainer;
 import edu.wol.dom.space.Position;
+import edu.wol.dom.space.Vector3f;
 
 public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolRepository<T,E> {
     final static Logger logger = LoggerFactory.getLogger(KryoRepository.class);

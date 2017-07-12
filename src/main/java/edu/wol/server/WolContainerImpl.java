@@ -28,10 +28,10 @@ import edu.wol.dom.server.BackgroundChange;
 import edu.wol.dom.space.IntVector;
 import edu.wol.dom.space.Movement;
 import edu.wol.dom.space.Position;
-import edu.wol.dom.space.Vector;
+import edu.wol.dom.space.Vector3f;
 import edu.wol.dom.space.Space;
 import edu.wol.server.repository.WolRepository;
-
+//@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Exception.class)
 public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolContainer<T,E> {
 	final static Logger logger = LoggerFactory.getLogger(WolContainerImpl.class);
 	volatile boolean shutdown = false;
@@ -120,7 +120,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 			Collection<E> ce= wol.getSpace().getAllEntities();
 			Collection<Phenomen<E>> phenomens=new ArrayList<Phenomen<E>>(ce.size());
 			for(E e : ce){
-					Position p=wol.getSpace().getPosition(e);
+				    Vector3f p = wol.getSpace().getPosition(e);
 					Phenomen<E> ph=new Phenomen<E>();
 					ph.setEntity(e);
 					ph.setPosition(p);

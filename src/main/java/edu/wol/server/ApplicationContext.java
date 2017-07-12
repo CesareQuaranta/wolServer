@@ -132,7 +132,7 @@ public class ApplicationContext {
        return dataSource;
     }
   
-    @Bean
+    @Bean(name="transactionManager")
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
        JpaTransactionManager transactionManager = new JpaTransactionManager();
        transactionManager.setEntityManagerFactory(emf);
