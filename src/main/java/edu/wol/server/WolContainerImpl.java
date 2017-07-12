@@ -31,7 +31,7 @@ import edu.wol.dom.space.Position;
 import edu.wol.dom.space.Vector;
 import edu.wol.dom.space.Space;
 import edu.wol.server.repository.WolRepository;
-
+//@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Exception.class)
 public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolContainer<T,E> {
 	final static Logger logger = LoggerFactory.getLogger(WolContainerImpl.class);
 	volatile boolean shutdown = false;
