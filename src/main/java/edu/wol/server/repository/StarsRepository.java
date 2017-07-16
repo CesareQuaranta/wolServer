@@ -55,7 +55,9 @@ public class StarsRepository implements WolRepository<SolarSystem,Planetoid> {
 	
 	@Override
 	public void flush() {
+		if(manager.isOpen()){
 			manager.flush();
+		}
 	}
 
 	@Override
