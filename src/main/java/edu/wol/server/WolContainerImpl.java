@@ -1,35 +1,23 @@
 package edu.wol.server;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import edu.wol.dom.Phenomen;
 import edu.wol.dom.Prospective;
-import edu.wol.dom.WolEntity;
-import edu.wol.dom.Window;
 import edu.wol.dom.WolContainer;
+import edu.wol.dom.WolEntity;
 import edu.wol.dom.WorldContainer;
-import edu.wol.dom.iEvent;
-import edu.wol.dom.server.BackgroundChange;
-import edu.wol.dom.space.IntVector;
+import edu.wol.dom.phisycs.Velocity;
 import edu.wol.dom.space.Movement;
 import edu.wol.dom.space.Position;
+import edu.wol.dom.space.Rotation;
 import edu.wol.dom.space.Vector3f;
-import edu.wol.dom.space.Space;
 import edu.wol.server.repository.WolRepository;
 //@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Exception.class)
 public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolContainer<T,E> {
@@ -78,7 +66,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 					}
 				}
 				if(repository!=null && !shutdown && (System.currentTimeMillis()-refreshTimestamp)>30000){
-					repository.flush();//Da valutare se farlo ogni tot o in maniera cachata
+					//repository.flush();//Da valutare se farlo ogni tot o in maniera cachata
 					//repository.update(wolInstances);
 					refreshTimestamp=System.currentTimeMillis();
 				}
@@ -124,6 +112,24 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 					Phenomen<E> ph=new Phenomen<E>();
 					ph.setEntity(e);
 					ph.setPosition(p);
+					Velocity v=wol.getPhisycs().getVelocity(e);
+					Velocity av=wol.getPhisycs().getAngularVelocity(e);
+					if(v!=null && !v.isEmpty() && v.getTime()<60000){//Return only for fast movement <1min otherwise movement will raise a push event
+						//Convert velocity to movement
+						Vector3f vv=v.getVector().clone();
+						vv.scale(v.getTime()/60000);
+						Movement<E> m=new Movement<E>(e,vv);
+						ph.addEffect(m);
+					}
+					if(av!=null && !av.isEmpty() && av.getTime()<60000){//Return only for fast rotation  <1min otherwise rotation will raise a push event
+						//Convert velocity to movement
+						Vector3f vv=av.getVector().clone();
+						float factorTime=(float)av.getTime()/60000;
+						vv.scale(factorTime);
+						Rotation<E> m=new Rotation<E>(e,vv);
+						ph.addEffect(m);
+					}
+					
 					phenomens.add(ph);
 				}
 			return phenomens;
