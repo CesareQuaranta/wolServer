@@ -70,7 +70,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem,Planetoid> {
 			if(wolID!=null){
 				long WolID=Long.parseLong(wolID.split("-")[1]);
 				Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
-				a.setShape(AsteroidShapeFactory.getInstance().generateHidrogenGemShape());
+				a.setShape(AsteroidShapeFactory.getInstance().generateRandomHidrogenGemShape());
 				wolContainer.insertEntity(a, WolID, (Position) gp.getPosition());
 				logger.debug("Test insert entity in position "+((Position)gp.getPosition()).toString()+" OK");
 			}
