@@ -113,7 +113,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 					ph.setEntity(e);
 					ph.setPosition(p);
 					Velocity v=wol.getPhisycs().getVelocity(e);
-					Velocity av=wol.getPhisycs().getAngularVelocity(e);
+					Rotation<E> av=wol.getPhisycs().getAngularVelocity(e);
 					if(v!=null && !v.isEmpty() && v.getTime()<60000){//Return only for fast movement <1min otherwise movement will raise a push event
 						//Convert velocity to movement
 						Vector3f vv=v.getVector().clone();
@@ -122,12 +122,7 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 						ph.addEffect(m);
 					}
 					if(av!=null && !av.isEmpty() && av.getTime()<60000){//Return only for fast rotation  <1min otherwise rotation will raise a push event
-						//Convert velocity to movement
-						Vector3f vv=av.getVector().clone();
-						float factorTime=(float)av.getTime()/60000;
-						vv.scale(factorTime);
-						Rotation<E> m=new Rotation<E>(e,vv);
-						ph.addEffect(m);
+						ph.addEffect(av);
 					}
 					
 					phenomens.add(ph);
