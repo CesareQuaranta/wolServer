@@ -142,6 +142,14 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 			repository.update(wol);
 		}	
 	}
+	
+	@Override
+	public void castAwayEntities(long wolID, Position position, long radius) {
+		T wol=findWol(wolID);
+		if(wol!=null){
+			wol.getPhisycs().castAwayEntities(position, radius);
+		}
+	}
 	private T internalGenerteWol() throws IOException, Exception{
 		T newEmptyInstance= wolClass.newInstance();
 		newEmptyInstance.init(spacePrecision,timePrecision);
@@ -159,4 +167,6 @@ public class WolContainerImpl<T extends WorldContainer<E,Position>,E extends Wol
 		}
 		return null;
 	}
+
+	
 }
