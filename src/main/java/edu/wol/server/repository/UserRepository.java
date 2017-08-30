@@ -34,6 +34,10 @@ public class UserRepository {
 	public void insert(User newUser) throws Exception, IOException {
 		manager.persist(newUser);
 	}
+	
+	public void update(User user) throws Exception, IOException {
+		manager.merge(user);
+	}
 
 
 	public void delete(User usern) {
