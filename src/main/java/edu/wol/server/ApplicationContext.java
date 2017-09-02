@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import edu.wol.dom.WolContainer;
 import edu.wol.dom.space.Planetoid;
 import edu.wol.starsystem.SolarSystem;
-import edu.wol.starsystem.StarDial;
  
 /**
  * An application context Java configuration class. The usage of Java configuration

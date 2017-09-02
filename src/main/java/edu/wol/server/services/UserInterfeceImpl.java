@@ -71,12 +71,11 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem,Planetoid> {
 			GravityPower gp=(GravityPower)com;
 			String wolID= user.getProspective().getWolID();
 			if(wolID!=null){
-				long WolID=Long.parseLong(wolID.split("-")[1]);
 				LiquidSphere hydrogenBubble = new LiquidSphere(Arrays.asList(new String[]{"h2","he","lt"}),163000,8);
 				/*Asteroid a = new Asteroid(Collections.singletonList("h2"),gp.getMagnitudo(),gp.getMagnitudo());
 				a.setShape(AsteroidShapeFactory.getInstance().generateRandomHidrogenGemShape());
 				wolContainer.insertEntity(a, WolID, (Position) gp.getPosition());*/
-				wolContainer.insertEntity(hydrogenBubble, WolID, (Position) gp.getPosition());
+				wolContainer.insertEntity(hydrogenBubble, wolID, (Position) gp.getPosition());
 				logger.debug("Test insert entity "+ hydrogenBubble.toString() + " in position "+((Position)gp.getPosition()).toString()+" OK");
 			}
 		}if(com instanceof Movement){
@@ -85,8 +84,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem,Planetoid> {
 			if(wolID!=null){
 				user.getProspective().setPosition(mov.getPosition());
 				userRepo.update(user);
-				long WolID=Long.parseLong(wolID.split("-")[1]);
-				wolContainer.castAwayEntities(WolID,mov.getPosition(),10);
+				wolContainer.castAwayEntities(wolID,mov.getPosition(),10);
 			}
 			
 		}else{
@@ -95,7 +93,7 @@ public class UserInterfeceImpl implements UserInterface<SolarSystem,Planetoid> {
 	}
 	
 	@Override
-	public Collection<Phenomen<Planetoid>> getAllPhenomen(long wolID) throws IOException, Exception {
+	public Collection<Phenomen<Planetoid>> getAllPhenomen(String wolID) throws IOException, Exception {
 		return wolContainer.getAllPhenomen(wolID);
 	}
 

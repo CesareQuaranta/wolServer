@@ -20,7 +20,7 @@ import edu.wol.dom.WorldContainer;
 import edu.wol.dom.space.Position;
 import edu.wol.dom.space.Vector3f;
 
-public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEntity> implements WolRepository<T,E> {
+public class KryoRepository<T extends WorldContainer<E,?,?,?>,E extends WolEntity> implements WolRepository<T,E> {
     final static Logger logger = LoggerFactory.getLogger(KryoRepository.class);
 	private Class<T> wolClass;
 	private File basePath;
@@ -64,7 +64,7 @@ public class KryoRepository<T extends WorldContainer<E,Position>,E extends WolEn
 		
 	}
 	
-	private void internalSerialize(WorldContainer<E,Position> newInstance,File file) throws FileNotFoundException{
+	private void internalSerialize(WorldContainer<E,?,?,?> newInstance,File file) throws FileNotFoundException{
 		Output output = new Output(new FileOutputStream(file));
 		kryo.writeObject(output,newInstance);
 		output.close();
